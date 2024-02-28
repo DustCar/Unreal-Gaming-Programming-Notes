@@ -39,12 +39,12 @@ UPROPERTY()
 ```
 
 Components declared with a UPROPERTY() macro with expty parentheses would have its properties hidden in the Details panel when working on a blueprint derived from the C++ classes. In order to see the details of the blueprint's components then some setting, like below, are needed within the C++ class in order to see and edit the properties in the Details panel in the editor.
-- VisibleAnywhere : is visible in the bp editor and world editor, but cannot be edited.
-- EditAnywhere : is visible and can be edited in the bp editor and world editor.
-- VisibleInstanceOnly : is not visible in the bp editor, but is visible in the world editor when an INSTANCE of the blueprint is dragged in.
-- VisibleDefaultsOnly : is visibile in the bp editor, but not visible in the world editor.
-- EditInstanceOnly : is not visible/editable in the bp editor, but is visible/editable in the world editor when an INSTANCE is dragged in.
-- EditDefaultsOnly : is visibile/editable in the bp editor, but not in the world editor.
+- VisibleAnywhere : is *visible* in the *bp editor* and *world editor*, but cannot be edited.
+- EditAnywhere : is *visible* and can be *edited* in the *bp editor* and *world editor*.
+- VisibleInstanceOnly : is **not visible** in the *bp editor*, but is *visible* in the *world editor* when an **INSTANCE** of the blueprint is dragged in.
+- VisibleDefaultsOnly : is *visibile* in the *bp editor*, but **not visible** in the *world editor*.
+- EditInstanceOnly : is **not visible/editable** in the *bp editor*, but is *visible/editable* in the *world editor* when an **INSTANCE** is dragged in.
+- EditDefaultsOnly : is *visibile/editable* in the *bp editor*, but **not** in the *world editor*.
 
 As for exposing components to the Event Graph of the blueprint editor, these parameters would be included within the parentheses:
 - BlueprintReadWrite : gives access to two nodes in the event graph, which are a getter and a setter for the specified variable.
