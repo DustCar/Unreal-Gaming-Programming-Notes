@@ -7,9 +7,11 @@ Here will be all of the notes that will be important for me to retain informatio
 `TSubClassOf<classType> SubclassVar`
 Class pointer variable used to create new objects from. Editor's detail panel would list only classes derived from 'classType'. In blueprints, it would be a purple pin.
 Source: https://forums.unrealengine.com/t/why-use-tsubclassof-and-not-just-the-class-itself/365690
+
 ---
 ### RootComponent (some general USceneComponent notes too)
 Component that is part of any new actor. It is classified as a USceneComponent and can be replaced by other Components that also derives from USceneComponent. It includes a tranform and does not include a visual representation. Can attach other components to USceneComponents.
+
 ---
 ### Constructing Components
 `CreateDefaultSubobject<{type}>(TEXT({name}))`
