@@ -62,7 +62,7 @@ To organize components within the Details tab, use the `Category = "{title}"` pa
 
 ---
 ### Unreal Enhanced Input System (EIS)
-Before starting, make sure that the Enhanced Input Plugin is enabled under the Edit->Plugins menu. After restarting editor, change the default input classes within Edit->Project Settings. Go to the input section under Engine and look for Default Classes. Set Default Player Input Class to EnhancedPlayerInput and set Default Input Component Class to EnhancedInputComponent.
+Before starting, make sure that the Enhanced Input Plugin is enabled under the *Edit->Plugins* menu. After restarting editor, change the default input classes within *Edit->Project Settings*. Go to the input section under **Engine** and look for Default Classes. Set *Default Player Input Class* to *EnhancedPlayerInput* and set *Default Input Component Class* to *EnhancedInputComponent*.
 
 Useful Console Commands:
 - showdebug enhancedinput
