@@ -86,9 +86,8 @@ After ensuring EIS is added and enabled, first task would be to set up the IMC w
 Next is to set up the IAs. This could be done individually by creating separate *UInputAction\** variables but would become tedious with more actions. 
 For better management, use a config file to hold multiple actions. This config file would subclass **DataAsset** and can hold as many actions as wanted.
 
-After creating the file, make sure to add `#include "InputAction.h"` in the header file. Then add all necessary/wanted *UInputActions* as **public** members with the preferred properties of *EditDefaultsOnly* and *BlueprintReadOnly*. 
-
-*Make sure to add the config file as a protected member of the character class, just like the IMC from earlier.*
+After creating the **DataAsset** file, make sure to add `#include "InputAction.h"` in the header file. Then add all necessary/wanted *UInputActions* as **public** members with the preferred properties of *EditDefaultsOnly* and *BlueprintReadOnly*. 
+Then, add the config file as a protected member of the Character class, just like the IMC from earlier.
 
 Now we go back to the *SetupPlayerInputComponent* function to bind functions to the actions listed in the header file.
 To do so:
