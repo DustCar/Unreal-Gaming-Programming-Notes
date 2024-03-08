@@ -83,7 +83,9 @@ After ensuring EIS is added and enabled, first task would be to set up the IMC w
    2. Get local player subsystem from player controller. (remember to add scope ULocalPlayer when using GetSubsystem<>().
    3. Clear mappings then add the Input Mapping context from header file.
 
-Next is to set up the IAs. This could be done individually by creating separate *UInputAction\** variables but would become tedious with more actions. For better management, use a config file to hold multiple actions. This config file would subclass **DataAsset** and can hold as many actions as wanted.
+Next is to set up the IAs. This could be done individually by creating separate *UInputAction\** variables but would become tedious with more actions. 
+
+For better management, use a config file to hold multiple actions. This config file would subclass **DataAsset** and can hold as many actions as wanted.
 
 After creating the file, make sure to add `#include "InputAction.h"` in the header file. Then add all necessary/wanted *UInputActions* as **public** members with the preferred properties of *EditDefaultsOnly* and *BlueprintReadOnly*. 
 
@@ -97,5 +99,6 @@ To do so:
 *Note: Make sure to add `#include "EnhancedInput/Public/EnhancedInputComponent.h"` and `#include "*ConfigData.h"` as headers.*
 
 Finally, declare the input functions that were bounded to earlier in the header file and then create the functions in the cpp file.
+
 When declaring the functions, it should have a ***const** FInputActionValue&* as a parameter and should be **void**.
 Within the cpp file, make sure to add `#include "InputActionValue.h"` as a header.
