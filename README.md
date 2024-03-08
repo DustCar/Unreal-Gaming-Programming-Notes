@@ -64,6 +64,8 @@ To organize components within the Details tab, use the `Category = "{title}"` pa
 ### Unreal Enhanced Input System (EIS)
 Before starting, make sure that the Enhanced Input Plugin is enabled under the *Edit->Plugins* menu. After restarting editor, change the default input classes within *Edit->Project Settings*. Go to the input section under **Engine** and look for Default Classes. Set *Default Player Input Class* to *EnhancedPlayerInput* and set *Default Input Component Class* to *EnhancedInputComponent*.
 
+Make sure that the plugin is included within the .uproject file (name is "EnhancedInput") and within the .Build.cs file (add "EnhancedInput" to PublicDependencyModuleNames line.
+
 Useful Console Commands:
 - showdebug enhancedinput
 
@@ -72,3 +74,28 @@ Useful Console Commands:
 - **Input Mapping Contexts (IMC)** : Maps user inputs to IAs and can be dynamically added, removed, or prioritized for each user. Can be applied one or more times through a local player's Enhanced Input Local Player Subsystem.
 - **Modifiers** : Adjusts the value of raw input coming from user's devices. IMCs can have any number of modifiers associated with each raw input for an IA. Examples: Dead zones, input smoothing. Custom modifiers can also be created.
 - **Triggers** : Uses post-Modifier input values, or output magnitudes of other IAs, to determine whether an IA should activate. Any IA can have one or more Triggers for each input.
+
+#### Using/Setting up EIS using C++
+After ensuring EIS is added and enabled, first task would be to set up the IMC within the character header and establishing SetupPlayerInputComponent in the cpp file.
+ - add a UInputMappingContext* as a protected member in *Character.h
+ - in the cpp file, set up SetupPlayerInputComponent. If anything is default set, other than `Super::SetupPlayerInputComponent`, then remove. We'll get back to it later on, for now is just setup.
+   1. Get player controller
+   2. Get local player subsystem from player controller. (remember to add scope ULocalPlayer when using GetSubsystem<>().
+   3. Clear mappings then add the Input Mapping context from header file.
+
+Next is to set up the IAs. This could be done individually by creating separate *UInputAction\** variables but would become tedious with more actions. For better management, use a config file to hold multiple actions. This config file would subclass **DataAsset** and can hold as many actions as wanted.
+
+After creating the file, make sure to add `#include "InputAction.h"` in the header file. Then add all necessary/wanted *UInputActions* as **public** members with the preferred properties of *EditDefaultsOnly* and *BlueprintReadOnly*. 
+
+Make sure to add the config file as a protected member of the character class, just like the IMC from earlier.
+
+Now we go back to the *SetupPlayerInputComponent* function to bind functions to the actions listed in the header file.
+To do so:
+ 1. Get the *EnhancedInputComponent* by casting it from the *PlayerInputComponent*
+ 2. Bind the actions to the functions that would be made soon using *BindAction*.
+
+*Note: Make sure to add `#include "EnhancedInput/Public/EnhancedInputComponent.h"` and `#include "*ConfigData.h"` as headers.*
+
+Finally, declare the input functions that were bounded to earlier in the header file and then create the functions in the cpp file.
+When declaring the functions, it should have a ***const** FInputActionValue&* as a parameter and should be **void**.
+Within the cpp file, make sure to add `#include "InputActionValue.h"` as a header.
