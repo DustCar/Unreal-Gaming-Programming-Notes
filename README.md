@@ -108,7 +108,7 @@ Within the cpp file, make sure to add `#include "InputActionValue.h"` as a heade
 When adding inputs for *Pawns*, especially for movement, it is important to note that *Pawns* **DO NOT** have a movement component that automatically handle the input and move.
 
 To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
-1. Move the *Pawn* using its location:
+- Move the *Pawn* using its location:
   Simple (maybe naive) way:
   1. Within your move function, Create an *FVector* variable that holds a zero vector.
   2. Use `Value.Get<FVector2D>()` and a dot operator to grab the X (A and D) or Y (W and S) input action value.
@@ -120,8 +120,8 @@ To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
   - The Speed variable can be a private member that is a float
   - Since the function is not used within Tick then it is likely that it does not have access to DeltaTime yet. To access DeltaTime, use `UGameplayStatics::GetWorldDeltaSeconds(this)`.
 
-2. Add the *Floating Pawn Movement* to *Pawn* BP and use *AddMovementInput* as you would with *Characters*:
-  a. Within the move function, use `Value.Get<FVector2D>()` and a dot operator to grab the X (A and D) or Y (W and S) input action value.
-  b. Get the forward vector of the pawn using `GetActorForwardVector()`.
-  c. Use `AddMovementInput()` and pass in the Forward vector, then the value.
+- Add the *Floating Pawn Movement* to *Pawn* BP and use *AddMovementInput* as you would with *Characters*:
+  1. Within the move function, use `Value.Get<FVector2D>()` and a dot operator to grab the X (A and D) or Y (W and S) input action value.
+  2. Get the forward vector of the pawn using `GetActorForwardVector()`.
+  3. Use `AddMovementInput()` and pass in the Forward vector, then the value.
   
