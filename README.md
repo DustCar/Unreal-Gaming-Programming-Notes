@@ -111,11 +111,11 @@ To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
 - Move the *Pawn* using its location:
   Simple (maybe naive) way:
   1. Within your move function, Create an *FVector* variable that holds a zero vector.
-  2. Use *Value.Get\<FVector2D\>()* and a dot operator to grab the X (A and D) or Y (W and S) input action value.
+  2. Use `Value.Get<FVector2D>()` and a dot operator to grab the X (A and D) or Y (W and S) input action value.
   3. Assign the value to whatever direction you need the pawn to go to the variable you made on step 1. i.e. VectorVariable.X = step 2 var -> moves in X direction
-  4. Use *AddActorLocalOffset()* and pass the vector variable in to move each tick. *Note: use local offset to move in the direction of the pawn and not with the world axis.*
+  4. Use `AddActorLocalOffset()` and pass the vector variable in to move each tick. *Note: use local offset to move in the direction of the pawn and not with the world axis.*
 - Add the *Floating Pawn Movement* to *Pawn* BP and use *AddMovementInput* as you would with *Characters*:
-  1. Within the move function, use *Value.Get\<FVector2D\>()* and a dot operator to grab the X (A and D) or Y (W and S) input action value.
-  2. Get the forward vector of the pawn using *GetActorForwardVector()*.
-  3. Use *AddMovementInput()* and pass in the Forward vector, then the value.
+  1. Within the move function, use `Value.Get<FVector2D>()` and a dot operator to grab the X (A and D) or Y (W and S) input action value.
+  2. Get the forward vector of the pawn using `GetActorForwardVector()`.
+  3. Use `AddMovementInput()` and pass in the Forward vector, then the value.
   
