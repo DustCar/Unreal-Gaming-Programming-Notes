@@ -110,10 +110,10 @@ When adding inputs for *Pawns*, especially for movement, it is important to note
 To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
 1. Move the *Pawn* using its location:
   Simple (maybe naive) way:
-  1. Within your move function, Create an *FVector* variable that holds a zero vector.
-  2. Use `Value.Get<FVector2D>()` and a dot operator to grab the X (A and D) or Y (W and S) input action value.
-  3. Assign the value to whatever direction you need the pawn to go to the variable you made on step 1. i.e. VectorVariable.X = step 2 var -> moves in X direction
-  4. Use `AddActorLocalOffset()` and pass the vector variable in to move each tick. *Note: use local offset to move in the direction of the pawn and not with the world axis.*
+  a. Within your move function, Create an *FVector* variable that holds a zero vector.
+  b. Use `Value.Get<FVector2D>()` and a dot operator to grab the X (A and D) or Y (W and S) input action value.
+  c. Assign the value to whatever direction you need the pawn to go to the variable you made on step 1. i.e. VectorVariable.X = step 2 var -> moves in X direction
+  d. Use `AddActorLocalOffset()` and pass the vector variable in to move each tick. *Note: use local offset to move in the direction of the pawn and not with the world axis.*
      
   Using the above method creates very slow, and inconsistent, movement since the amount of movement is set with the value of the input action (1.0) and is based on framerate.
   To fix this, it is best to scale the value that is being assigned by a Speed variable and DeltaTime. i.e. `Value * Speed * DeltaTime`.
@@ -121,7 +121,7 @@ To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
   - Since the function is not used within Tick then it is likely that it does not have access to DeltaTime yet. To access DeltaTime, use `UGameplayStatics::GetWorldDeltaSeconds(this)`.
 
 2. Add the *Floating Pawn Movement* to *Pawn* BP and use *AddMovementInput* as you would with *Characters*:
-  1. Within the move function, use `Value.Get<FVector2D>()` and a dot operator to grab the X (A and D) or Y (W and S) input action value.
-  2. Get the forward vector of the pawn using `GetActorForwardVector()`.
-  3. Use `AddMovementInput()` and pass in the Forward vector, then the value.
+  a. Within the move function, use `Value.Get<FVector2D>()` and a dot operator to grab the X (A and D) or Y (W and S) input action value.
+  b. Get the forward vector of the pawn using `GetActorForwardVector()`.
+  c. Use `AddMovementInput()` and pass in the Forward vector, then the value.
   
