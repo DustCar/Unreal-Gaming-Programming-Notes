@@ -79,9 +79,9 @@ Useful Console Commands:
 After ensuring EIS is added and enabled, first task would be to set up the IMC within the character header and establishing SetupPlayerInputComponent in the cpp file.
  - add a UInputMappingContext* as a protected member in *Character.h
  - in the cpp file, set up SetupPlayerInputComponent. If anything is default set, other than `Super::SetupPlayerInputComponent`, then remove. We'll get back to it later on, for now is just setup.
-   1. Get player controller
-   2. Get local player subsystem from player controller. (remember to add scope ULocalPlayer when using GetSubsystem<>().
-   3. Clear mappings then add the Input Mapping context from header file.
+   1. Get player controller using `GetController()`. Make sure to Cast to make sure you are retrieving an APlayerController object.
+   2. Get enhanced input local player subsystem from player controller using `ULocalPlayer::GetSubsystem<>()`.
+   3. Clear mappings using `ClearAllMappings()` then add the Input Mapping context from header file with `AddMappingContext()`.
 
 Next is to set up the IAs. This could be done individually by creating separate *UInputAction\** variables but would become tedious with more actions. 
 For better management, use a config file to hold multiple actions. This config file would subclass **DataAsset** and can hold as many actions as wanted.
@@ -114,6 +114,12 @@ To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
   2. Use `Value.Get<FVector2D>()` and a dot operator to grab the X (A and D) or Y (W and S) input action value.
   3. Assign the value to whatever direction you need the pawn to go to the variable you made on step 1. i.e. VectorVariable.X = step 2 var -> moves in X direction
   4. Use `AddActorLocalOffset()` and pass the vector variable in to move each tick. *Note: use local offset to move in the direction of the pawn and not with the world axis.*
+     
+  Using the above method creates very slow, and inconsistent, movement since the amount of movement is set with the value of the input action (1.0) and is based on framerate.
+  To fix this, it is best to scale the value that is being assigned by a Speed variable and DeltaTime. i.e. `Value * Speed * DeltaTime`.
+  - The Speed variable can be a private member that is a float
+  - Since the function is not used within Tick then it is likely that it does not have access to DeltaTime yet. To access DeltaTime, use `UGameplayStatics::GetWorldDeltaSeconds(this)`.
+
 - Add the *Floating Pawn Movement* to *Pawn* BP and use *AddMovementInput* as you would with *Characters*:
   1. Within the move function, use `Value.Get<FVector2D>()` and a dot operator to grab the X (A and D) or Y (W and S) input action value.
   2. Get the forward vector of the pawn using `GetActorForwardVector()`.
