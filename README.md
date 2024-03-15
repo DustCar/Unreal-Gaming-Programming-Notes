@@ -124,4 +124,16 @@ To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
   1. Within the move function, use `Value.Get<FVector2D>()` and a dot operator to grab the X (A and D) or Y (W and S) input action value.
   2. Get the forward vector of the pawn using `GetActorForwardVector()`.
   3. Use `AddMovementInput()` and pass in the Forward vector, then the value.
+
+---
+### Template Functions
+`TSubClassOf<type>`
+- Used for type safety. Forces designers to use a derived UClass. It runs a check on compilation and would return a compile error if the *type* is not a subclass of the specified UClass type.
+
+Why not use `UClass*`?
+- With `UClass*`, it is possible to assign the `UClass*` with any UClass rather than only being a set type of UClass. In addition, when assigning the variable, it would do a check at runtime and return a *nullptr* on failure.
+
+`TSoftObjectPtr<type>`
+- Used for referencing objects which might or might not be loaded via path. Can point to actors within a level even if they are not loaded. Can be loaded ASYNCHRONOUSLY and does NOT load its value into memory.
+
   
