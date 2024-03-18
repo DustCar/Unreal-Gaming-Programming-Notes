@@ -91,8 +91,11 @@ To do so:
 *Note: Make sure to add `#include "EnhancedInput/Public/EnhancedInputComponent.h"` and `#include "*ConfigData.h"` as headers.*
 
 Finally, declare the input functions that were bounded to earlier in the header file and then create the functions in the cpp file.
-When declaring the functions, it should have a ***const** FInputActionValue&* as a parameter and should be **void**.
+ - When declaring the functions, it should should be **void**.
+ - For functions that require an input value, like for movement or anything vector based, it must have a ***const** FInputActionValue&* as a parameter
 Within the cpp file, make sure to add `#include "InputActionValue.h"` as a header.
+
+**The input functions that are bounded are the main core of functionality. Whatever is placed in those functions will run whenever the input is achieved.**
 
 *Note: When using the Value parameter in the action functions, Value itself doesn't do much. It is a struct and has get methods that you can use to actually get an input action value.*
 
