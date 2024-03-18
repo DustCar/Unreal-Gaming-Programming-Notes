@@ -127,11 +127,9 @@ To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
 Why not use `UClass*`?
 - With `UClass*`, it is possible to assign the `UClass*` with any UClass rather than only being a set type of UClass. In addition, when assigning the variable, it would do a check at runtime and return a *nullptr* on failure.
 
+Extra information: https://forums.unrealengine.com/t/why-use-tsubclassof-and-not-just-the-class-itself/365690
+
 `TSoftObjectPtr<type>`
 - Used for referencing objects which might or might not be loaded via path. Can point to actors within a level even if they are not loaded. Can be loaded **ASYNCHRONOUSLY** and does **NOT** load its value into memory.
 
-`TSubClassOf<classType> SubclassVar`
-Class pointer variable used to create new objects from. Editor's detail panel would list only classes derived from 'classType'. In blueprints, it would be a purple pin.
-
-Source: https://forums.unrealengine.com/t/why-use-tsubclassof-and-not-just-the-class-itself/365690
   
