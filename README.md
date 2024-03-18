@@ -3,12 +3,6 @@
 Here will be all of the notes that will be important for me to retain information about gameplay and using Unreal Engine 5.2
 
 ## Unreal
-### TSubClassOf<{class}>
-`TSubClassOf<classType> SubclassVar`
-Class pointer variable used to create new objects from. Editor's detail panel would list only classes derived from 'classType'. In blueprints, it would be a purple pin.
-Source: https://forums.unrealengine.com/t/why-use-tsubclassof-and-not-just-the-class-itself/365690
-
----
 ### RootComponent (some general USceneComponent notes too)
 Component that is part of any new actor. It is classified as a USceneComponent and can be replaced by other Components that also derives from USceneComponent. It includes a tranform and does not include a visual representation. Can attach other components to USceneComponents.
 
@@ -136,4 +130,8 @@ Why not use `UClass*`?
 `TSoftObjectPtr<type>`
 - Used for referencing objects which might or might not be loaded via path. Can point to actors within a level even if they are not loaded. Can be loaded **ASYNCHRONOUSLY** and does **NOT** load its value into memory.
 
+`TSubClassOf<classType> SubclassVar`
+Class pointer variable used to create new objects from. Editor's detail panel would list only classes derived from 'classType'. In blueprints, it would be a purple pin.
+
+Source: https://forums.unrealengine.com/t/why-use-tsubclassof-and-not-just-the-class-itself/365690
   
