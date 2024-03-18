@@ -77,7 +77,7 @@ Useful Console Commands:
 
 #### Using/Setting up EIS using C++
 After ensuring EIS is added and enabled, first task would be to set up the IMC within the character header and establishing SetupPlayerInputComponent in the cpp file.
- - add a UInputMappingContext* as a protected member in *Character.h
+ - add a UInputMappingContext* as a protected member in *Character.h*
  - in the cpp file, set up SetupPlayerInputComponent. If anything is default set, other than `Super::SetupPlayerInputComponent`, then remove. We'll get back to it later on, for now is just setup.
    1. Get player controller using `GetController()`. Make sure to Cast to make sure you are retrieving an APlayerController object.
    2. Get enhanced input local player subsystem from player controller using `ULocalPlayer::GetSubsystem<>()`.
@@ -134,6 +134,6 @@ Why not use `UClass*`?
 - With `UClass*`, it is possible to assign the `UClass*` with any UClass rather than only being a set type of UClass. In addition, when assigning the variable, it would do a check at runtime and return a *nullptr* on failure.
 
 `TSoftObjectPtr<type>`
-- Used for referencing objects which might or might not be loaded via path. Can point to actors within a level even if they are not loaded. Can be loaded ASYNCHRONOUSLY and does NOT load its value into memory.
+- Used for referencing objects which might or might not be loaded via path. Can point to actors within a level even if they are not loaded. Can be loaded **ASYNCHRONOUSLY** and does **NOT** load its value into memory.
 
   
