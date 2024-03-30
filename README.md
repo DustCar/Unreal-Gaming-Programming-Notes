@@ -3,6 +3,8 @@
 Here will be all of the notes that will be important for me to retain information about gameplay and using Unreal Engine 5.2
 
 ## Unreal
+
+---
 ### RootComponent (some general USceneComponent notes too)
 Component that is part of any new actor. It is classified as a USceneComponent and can be replaced by other Components that also derives from USceneComponent. It includes a tranform and does not include a visual representation. Can attach other components to USceneComponents.
 
@@ -123,9 +125,25 @@ To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
   3. Use `AddMovementInput()` and pass in the Forward vector, then the value.
 
 ---
+### Projectiles
+#### Projectile Movement
+Three ways to implement projectile movement:
+- Manually set location/rotation. Implemented using Tick.
+- Add an impulse. Enable/Use physics/physics system.
+- Attach a movement component. Unreal has an already built Projectile Movement Component.
+
+**Using UProjectileMovementComponent**
+include: `#include "GameFramework/ProjectileMovementComponent.h"`
+
+To add the component is the same as any other component:
+1. Add pointer declaration in header with UPROPERTY() for editor usage.
+2. Use CreateDefaultSubobject<>() in cpp to construct the component.
+3. Set any variables/attachments.
+
+---
 ### Template Functions
 `TSubClassOf<type>`
-- Used for type safety. Forces designers to use a derived UClass. It runs a check on compilation and would return a compile error if the *type* is not a subclass of the specified UClass type.
+- Used for type safety. Forces designers to use a derived UClass or subclass of set Class. It runs a check on compilation and would return a compile error if the *type* is not a subclass of the specified UClass type.
 
 Why not use `UClass*`?
 - With `UClass*`, it is possible to assign the `UClass*` with any UClass rather than only being a set type of UClass. In addition, when assigning the variable, it would do a check at runtime and return a *nullptr* on failure.
@@ -135,4 +153,7 @@ Extra information: https://forums.unrealengine.com/t/why-use-tsubclassof-and-not
 `TSoftObjectPtr<type>`
 - Used for referencing objects which might or might not be loaded via path. Can point to actors within a level even if they are not loaded. Can be loaded **ASYNCHRONOUSLY** and does **NOT** load its value into memory.
 
-  
+`UWorld::SpawnActor<type>(UClass, Location, Rotation)`
+- Used to spawn actors into the world. Using a `TSubclassOf<>` UClass allows you to pass in a BP in for UClass to spawn in actors with all necessary components.
+- To use, type `GetWorld()->SpawnActor<>()` or any other var/func that returns a UWorld object.
+
