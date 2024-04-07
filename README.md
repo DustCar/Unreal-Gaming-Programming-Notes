@@ -77,7 +77,8 @@ Useful Console Commands:
 - **Triggers** : Uses post-Modifier input values, or output magnitudes of other IAs, to determine whether an IA should activate. Any IA can have one or more Triggers for each input.
 
 #### Using/Setting up EIS using C++
-original article: <nightails.com/2022/10/16/unreal-engine-enhanced-input-system-in-c/>
+original article: <nightails.com/2022/10/16/unreal-engine-enhanced-input-system-in-c>
+
 After ensuring EIS is added and enabled, first task would be to set up the IMC within the character header and establishing SetupPlayerInputComponent in the cpp file.
  - add a UInputMappingContext* as a protected member in *Character.h*
  - in the cpp file, set up SetupPlayerInputComponent. If anything is default set, other than `Super::SetupPlayerInputComponent`, then remove. We'll get back to it later on, for now is just setup.
@@ -139,6 +140,8 @@ Three ways to implement projectile movement:
 - Attach a movement component. Unreal has an already built Projectile Movement Component.
 
 **Using UProjectileMovementComponent**
+documentation: <https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/GameFramework/UProjectileMovementComponent?application_version=5.2>
+
 include: `#include "GameFramework/ProjectileMovementComponent.h"`
 
 To add the component is the same as any other component:
