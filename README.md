@@ -4,7 +4,6 @@ Here will be all of the notes that will be important for me to retain informatio
 
 ## Unreal
 
----
 ### RootComponent (some general USceneComponent notes too)
 Component that is part of any new actor. It is classified as a USceneComponent and can be replaced by other Components that also derives from USceneComponent. It includes a tranform and does not include a visual representation. Can attach other components to USceneComponents.
 
