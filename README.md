@@ -187,6 +187,23 @@ void DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageTy
 - *Broadcast* to functions in *Invocation List* when something happens for response.
 
 ---
+### Progamming GameMode Class
+#### AGameModeBase vs. AGameMode
+AGameModeBase is one tier above AGameMode, meaning that AGameMode subclasses AGameModeBase. This makes AGameModeBase more general than AGameMode.
+
+**AGameModeBase** defines the game being played and includes:
+- Rules of the game
+- Win conditions
+- What actors exist/Who enters the game
+When dealing with server-client games, it is only instantiated server-side and never exists on a client.
+
+**AGameMode** is more suited for match-based multiplayer games:
+- Deals with spawn points
+- Handles match state
+
+When deciding to create a custom GameMode class, it is then better to use AGameModeBase since that is really where the rules of the game are being defined.
+
+---
 ### Template Functions
 `TSubClassOf<type>`
 - Used for type safety. Forces designers to use a derived UClass or subclass of set Class. It runs a check on compilation and would return a compile error if the *type* is not a subclass of the specified UClass type.
