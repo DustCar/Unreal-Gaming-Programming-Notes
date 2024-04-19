@@ -82,8 +82,8 @@ original article: <https://nightails.com/2022/10/16/unreal-engine-enhanced-input
 After ensuring EIS is added and enabled, first task would be to set up the IMC within the character header and establishing SetupPlayerInputComponent in the cpp file.
  - add a UInputMappingContext* as a protected member in *Character.h*
  - in the cpp file, set up SetupPlayerInputComponent. If anything is default set, other than `Super::SetupPlayerInputComponent`, then remove. We'll get back to it later on, for now is just setup.
-   1. Get player controller using `GetController()`. Make sure to Cast to make sure you are retrieving an APlayerController object.
-   2. Get enhanced input local player subsystem from player controller using `ULocalPlayer::GetSubsystem<>()`.
+   1. Get player controller using `GetController()`. Make sure to `Cast<APlayerController>()` to make sure you are retrieving an APlayerController object.
+   2. Get enhanced input local player subsystem from player controller using `ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>()`.
    3. Clear mappings using `ClearAllMappings()` then add the Input Mapping context from header file with `AddMappingContext()`.
 
 Next is to set up the IAs. This could be done individually by creating separate *UInputAction\** variables but would become tedious with more actions. 
@@ -106,7 +106,7 @@ Within the cpp file, make sure to add `#include "InputActionValue.h"` as a heade
 
 **The input functions that are bounded are the main core of functionality. Whatever is placed in those functions will run whenever the input is achieved.**
 
-*Note: When using the Value parameter in the action functions, Value itself doesn't do much. It is a struct and has get methods that you can use to actually get an input action value.*
+*Note: When using the Value parameter in the action functions, Value itself doesn't do much. It is a struct and has get methods that you can use to actually get an input action value. i.e., Value.Get<FVector2D>() returns a 2D Vector Struct that has X and Y values which can be used to determine that there is input.*
 
 ---
 ### General notes for writing code for Input Action functions
@@ -203,6 +203,13 @@ When dealing with server-client games, it is only instantiated server-side and n
 
 When deciding to create a custom GameMode class, it is then better to use AGameModeBase since that is really where the rules of the game are being defined.
 
+#### Dealing with multiple actors in a game mode function
+In the case where you have a function that passes in a generic actor, it is possible to use Casting in a conditional as a way to check what the actor being passed in is. This is especially useful for enemy actors, which you can have a large number of. 
+
+Example: `if (AEnemyActor* BadActor = Cast<AEnemyActor>(PassedActor)) { do this }`
+
+It is effective when the enemies are of the same type but the main takeaway is that it can lower the number of conditionals you need for that function.
+
 ---
 ### Template Functions
 `TSubClassOf<type>`
@@ -212,6 +219,10 @@ Why not use `UClass*`?
 - With `UClass*`, it is possible to assign the `UClass*` with any UClass rather than only being a set type of UClass. In addition, when assigning the variable, it would do a check at runtime and return a *nullptr* on failure.
 
 Extra information: <https://forums.unrealengine.com/t/why-use-tsubclassof-and-not-just-the-class-itself/365690>
+
+`Cast<type>(object)`
+- Used to convert the object within the parenthesis to the type inside of the angle brackets. It is only possible if the type is an inheritance of the object being passed in. Used to get a more specific pointer to a more general one.
+- For example, `Cast<APlayerController>(GetController())`. This line returns APlayerController* rather than the generic AController* from GetController().
 
 `TSoftObjectPtr<type>`
 - Used for referencing objects which might or might not be loaded via path. Can point to actors within a level even if they are not loaded. Can be loaded **ASYNCHRONOUSLY** and does **NOT** load its value into memory.
