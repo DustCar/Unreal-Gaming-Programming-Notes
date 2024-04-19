@@ -208,7 +208,7 @@ In the case where you have a function that passes in a generic actor, it is poss
 
 Example: `if (AEnemyActor* BadActor = Cast<AEnemyActor>(PassedActor)) { do this }`
 
-It is effective when the enemies are of the same type but the main takeaway is that it can lower the number of conditionals you need for that function.
+It is effective when the enemies are of the same type but the main takeaway is that it can lower the number of conditionals you need for that function since you do not need to be too specific.
 
 ---
 ### Template Functions
