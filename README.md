@@ -116,7 +116,7 @@ When adding inputs for *Pawns*, especially for movement, it is important to note
 To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
 - Move the *Pawn* using its location:
   Simple (maybe naive) way:
-  1. Within your move function, Create an *FVector* variable that holds a zero vector.
+  1. Within your move function, Create an `FVector` variable that holds a zero vector.
   2. Use `Value.Get<FVector2D>()` and a dot operator to grab the X (A and D) or Y (W and S) input action value.
   3. Assign the value to whatever direction you need the pawn to go to the variable you made on step 1. i.e. VectorVariable.X = step 2 var -> moves in X direction
   4. Use `AddActorLocalOffset()` and pass the vector variable in to move each tick. *Note: use local offset to move in the direction of the pawn and not with the world axis.*
@@ -152,6 +152,20 @@ To add the component is the same as any other component:
 
 ---
 ### Timers
+Managed by _Timer Managers_, which are of struct `FTimerManager`.
+
+A global, as well as World, Timer Manager exists on the Game Instance object and on each World.
+
+To call functions from the _World Timer Manager_, use `GetWorldTimerManager().*`.
+
+Common Functions to use with Timers include:
+- `SetTimer()`: sets a delay/timer for a call back function
+  - Usual Overload: `SetTimer(Timer Handle, User Object, CallBack Function, Timer Rate, Loop Bool, Beginning Delay)`
+  - Timer Delegate Overload: `SetTimer(Timer Handle, Timer Delegate, Timer Rate, Loop Bool, Beginning Delay)`
+  - No Delegate Overload: `SetTimer(Timer Handle, Timer Rate, Loop Bool, Beginning Delay)`
+- `IsTimerActive()`: checks if a timer is currently counting
+
+<ins>Timer Delegate</ins>: To create a `FTimerDelegate` variable, use `FTimerDelegate::CreateUObject(User Object, Callback Function, Function Params)`
 
 ---
 ### Delegates (Events)
