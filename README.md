@@ -67,7 +67,7 @@ Some other UE macros include:
 ##### UFUNCTION()
 `UFUNCTION()` is similar to `UPROPERTY()` but for functions. It also exposes the function to the _Reflection System_ and has its own specifiers and metadata specifiers.
 
-Just like variables, the `UFUNCTION()` macro has specifiers that allow it to be used in Blueprints:
+Just like variables, the `UFUNCTION()` macro has specifiers that allow it to be used in Blueprints.
 - _BlueprintAuthorityOnly_: makes function only execute in Blueprint code if running on a machine with network authority
 - _BlueprintCallable_: makes function executable in Blueprints
 - _BlueprintCosmetic_: makes function cosmetic and will not run on dedicated servers
