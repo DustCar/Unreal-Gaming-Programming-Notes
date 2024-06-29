@@ -26,32 +26,54 @@ class {ClassName}
 
 #### Declaring variables for components in header file
 
-Before creating the component, declare the variable in the header file and provide the macro UPROPERTY() before the declaration. In the instance that a component is not included as a part of the file's class then Forward Declaration is needed. For example, in an actor class, UCapsuleComponent needs to be forward declared, while UStaticMeshComponent does not. This is because UStaticMeshComponent is included in the actor class.
+Before creating the component, it may need the macro `UPROPERTY()` before the declaration. In the instance that a component is not included as a part of the file's class then Forward Declaration is needed. For example, in an Actor class, _UCapsuleComponent_ needs to be forward declared, while _UStaticMeshComponent_ does not. This is because _UStaticMeshComponent_ is included in the Actor class.
 
 ```
 UPROPERTY()
 (class) ComponentType* VarName;
 ```
 
-Components declared with a UPROPERTY() macro with empty parentheses would have its properties hidden in the Details panel when working on a blueprint derived from the C++ classes. In order to see the details of the blueprint's components then some setting, like below, are needed within the C++ class in order to see and edit the properties in the Details panel in the editor.
-- VisibleAnywhere : is *visible* in the *bp editor* and *world editor*, but **cannot** be edited.
-- EditAnywhere : is *visible* and can be *edited* in the *bp editor* and *world editor*.
-- VisibleInstanceOnly : is **not visible** in the *bp editor*, but is *visible* in the *world editor* when an **INSTANCE** of the blueprint is dragged in.
-- VisibleDefaultsOnly : is *visibile* in the *bp editor*, but **not visible** in the *world editor*.
-- EditInstanceOnly : is **not visible/editable** in the *bp editor*, but is *visible/editable* in the *world editor* when an **INSTANCE** is dragged in.
-- EditDefaultsOnly : is *visibile/editable* in the *bp editor*, but **not** in the *world editor*.
+Components declared with a `UPROPERTY()` macro with empty parentheses would have its properties hidden in the Details panel when working on a blueprint derived from the C++ classes. These components would be included in the Engine's _Reflection System_ allowing Garbage Collection (GC) to check if the components is being refrenced or refrencing something before freeing it. Without it, then GC may free a component while using it. **It's best to use the `UPROPERTY()` macro for UObjects and members that are used frequently and that are needed to make the game run properly.**
+
+In order to see the details of the blueprint's components then specifiers are needed within `UPROPERTY()` in order to see and edit the properties in the Details panel in the editor.
+- _VisibleAnywhere_ : is *visible* in the *bp editor* and *world editor*, but **cannot** be edited.
+- _EditAnywhere_ : is *visible* and can be *edited* in the *bp editor* and *world editor*.
+- _VisibleInstanceOnly_ : is **not visible** in the *bp editor*, but is *visible* in the *world editor* when an **INSTANCE** of the blueprint is dragged in.
+- _VisibleDefaultsOnly_ : is *visibile* in the *bp editor*, but **not visible** in the *world editor*.
+- _EditInstanceOnly_ : is **not visible/editable** in the *bp editor*, but is *visible/editable* in the *world editor* when an **INSTANCE** is dragged in.
+- _EditDefaultsOnly_ : is *visibile/editable* in the *bp editor*, but **not** in the *world editor*.
 
   *Note: For component types, like UStaticMeshComponent, it is best to use VisibleAnywhere to assign a mesh since EditAnywhere would try to change the UStaticMeshComponent pointer itself rather than changing the static mesh only.*
 
 As for exposing components to the Event Graph of the blueprint editor, these parameters would be included within the parentheses:
-- BlueprintReadWrite : gives access to two nodes in the event graph, which are a getter and a setter for the specified variable.
-- BlueprintReadOnly : gives access to ONLY the GETTER node for the variable.
+- _BlueprintReadWrite_ : gives access to two nodes in the event graph, which are a getter and a setter for the specified variable.
+- _BlueprintReadOnly_ : gives access to ONLY the GETTER node for the variable.
 
 *Note: Both parameters above **cannot** be used to expose private members.*
+
+Here are some metadata specifiers for `UPROPERTY()`:
 
 To expose private members for blueprints, use the `meta = (AllowPrivateAccess = "true")` in UPROPERTY().
 
 To organize components within the Details tab, use the `Category = "{title}"` parameter.
+
+#### Other Macros
+Some other UE macros include:
+- `UFUNCTION()`
+- `USTRUCT()`
+- `UCLASS()`
+- `UENUM()`
+
+##### UFUNCTION()
+`UFUNCTION()` is similar to `UPROPERTY()` but for functions. It also exposes the function to the _Reflection System_ and has its own specifiers and metadata specifiers.
+
+Just like variables, the `UFUNCTION()` macro has specifiers that allow it to be used in Blueprints:
+- _BlueprintAuthorityOnly_: makes function only execute in Blueprint code if running on a machine with network authority
+- _BlueprintCallable_: makes function executable in Blueprints
+- _BlueprintCosmetic_: makes function cosmetic and will not run on dedicated servers
+- _BlueprintImplementableEvent_: makes function implementable in Blueprints
+- _BlueprintNativeEvent_: gives a function a native implementation, but is designed to be overridden by a Blueprint. Declares an additional function named the same as the main function, but with `_Implementation` added to the end, which is where code should be written. If no Blueprint override is found, the `_Implementation` method is called.
+- _BlueprintPure_: The function does not affect the owning object in any way and can be executed in a Blueprint or Level Blueprint graph. By default, a _BlueprintCallable_ const function would be exposed as a Pure function. To keep a function const, but **not** pure, use `BlueprintPure=false`. Be cautious using Pure functions for non-trivial functions as they do not cache their results. This can lead to major overhead and unexpected outputs or crashes. It is good practice to avoid outputting array properties in Blueprint pure functions. see [this article](https://raharuu.github.io/unreal/blueprint-pure-functions-complicated/) for more info on Blueprint Pure Functions.
 
 #### Creating your own components for internal details (i.e. Health, Currency, Stats)
 *Note: I'm sure the Gameplay Ability System can easily accomplish this too but this intentially skips GAS just to cover different cases.*
