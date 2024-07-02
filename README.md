@@ -2,20 +2,20 @@
 
 Here will be all of the notes that will be important for me to retain information about gameplay and using Unreal Engine 5.2
 
-## Unreal Engine
+# Unreal Engine
 
-### RootComponent (some general USceneComponent notes too)
+## RootComponent (some general USceneComponent notes too)
 Component that is part of any new actor. It is classified as a USceneComponent and can be replaced by other Components that also derives from USceneComponent. It includes a tranform and does not include a visual representation. Can attach other components to USceneComponents.
 
 ---
-### Constructing Components
+## Constructing Components
 `CreateDefaultSubobject<type>(TEXT("name"))`
 
 A Template function that constructs a component of the specified type in the angle brackets. The parameter in the parantheses would be the name of said subobject. Returns a pointer to the component set as specified type. 
 
 *Ex: CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule")) --> returns UCapsuleComponent\**
 
-#### Forward Declaration
+### Forward Declaration
 Useful when needing a specific class to declare a variable type without including a separate header file. Avoids having to copy loads of code into the file needing the class, but is limited in that it does not allow access to members, use of functions, and constructing objects of the class, making it an incomplete type. To access members/use functions/construct objects, then the header file is needed. 
 ```
 #include ...
@@ -24,7 +24,7 @@ class {ClassName}
 ```
 *Note: Best practice to avoid including a lot of header files in header files. Only include header files where needed, mostly in cpp files. Use Forward Declaration for header files for type declaring.*
 
-#### Declaring variables for components in header file
+### Declaring variables for components in header file
 
 Before creating the component, it may need the macro `UPROPERTY()` before the declaration. In the instance that a component is not included as a part of the file's class then Forward Declaration is needed. For example, in an Actor class, _UCapsuleComponent_ needs to be forward declared, while _UStaticMeshComponent_ does not. This is because _UStaticMeshComponent_ is included in the Actor class.
 
@@ -57,14 +57,14 @@ To expose private members for blueprints, use the `meta = (AllowPrivateAccess = 
 
 To organize components within the Details tab, use the `Category = "{title}"` parameter.
 
-#### Other Macros
+### Other Macros
 Some other UE macros include:
 - `UFUNCTION()`
 - `USTRUCT()`
 - `UCLASS()`
 - `UENUM()`
 
-##### UFUNCTION()
+#### UFUNCTION()
 `UFUNCTION()` is similar to `UPROPERTY()` but for functions. It also exposes the function to the _Reflection System_ and has its own specifiers and metadata specifiers.
 
 Just like variables, the `UFUNCTION()` macro has specifiers that allow it to be used in Blueprints.
@@ -76,7 +76,7 @@ Just like variables, the `UFUNCTION()` macro has specifiers that allow it to be 
 - _BlueprintNativeEvent_: gives a function a native implementation, but is designed to be overridden by a Blueprint. Declares an additional function named the same as the main function, but with `_Implementation` added to the end, which is where code should be written. If no Blueprint override is found, the `_Implementation` method is called.
 - _BlueprintPure_: The function does not affect the owning object in any way and can be executed in a Blueprint or Level Blueprint graph. By default, a _BlueprintCallable_ const function would be exposed as a Pure function. To keep a function const, but **not** pure, use `BlueprintPure=false`. Be cautious using Pure functions for non-trivial functions as they do not cache their results. This can lead to major overhead and unexpected outputs or crashes. It is good practice to avoid outputting array properties in Blueprint pure functions. see [this article](https://raharuu.github.io/unreal/blueprint-pure-functions-complicated/) for more info on Blueprint Pure Functions.
 
-#### Creating your own components for internal details (i.e. Health, Currency, Stats)
+### Creating your own components for internal details (i.e. Health, Currency, Stats)
 *Note: I'm sure the Gameplay Ability System can easily accomplish this too but this intentially skips GAS just to cover different cases.*
 This best done using the *Actor Component* class, rather than *Scene Component*, as a base since there is no need for transform or attachments.
 
@@ -84,7 +84,7 @@ The way to setup this component in C++ is just like how it is stated in this sec
 Once the class is created, it automatically has a UCLASS macro that allows it to be used in Blueprints, so if needed then you can easily just add your new component to any blueprint, if you don't want to declare it in C++.
 
 ---
-### Unreal Enhanced Input System (EIS)
+## Unreal Enhanced Input System (EIS)
 Before starting, make sure that the Enhanced Input Plugin is enabled under the *Edit->Plugins* menu. After restarting editor, change the default input classes within *Edit->Project Settings*. Go to the input section under **Engine** and look for Default Classes. Set *Default Player Input Class* to *EnhancedPlayerInput* and set *Default Input Component Class* to *EnhancedInputComponent*.
 
 Make sure that the plugin is included within the .uproject file (name is "EnhancedInput") and within the .Build.cs file (add "EnhancedInput" to PublicDependencyModuleNames line.
@@ -92,13 +92,13 @@ Make sure that the plugin is included within the .uproject file (name is "Enhanc
 Useful Console Commands:
 - showdebug enhancedinput
 
-#### Main Concepts
+### Main Concepts
 - **Input Actions (IA)** : Link between EIS and project code. Separate from raw input and focuses on its current state, returning an input value based on three independent floating-point axes.
 - **Input Mapping Contexts (IMC)** : Maps user inputs to IAs and can be dynamically added, removed, or prioritized for each user. Can be applied one or more times through a local player's Enhanced Input Local Player Subsystem.
 - **Modifiers** : Adjusts the value of raw input coming from user's devices. IMCs can have any number of modifiers associated with each raw input for an IA. Examples: Dead zones, input smoothing. Custom modifiers can also be created.
 - **Triggers** : Uses post-Modifier input values, or output magnitudes of other IAs, to determine whether an IA should activate. Any IA can have one or more Triggers for each input.
 
-#### Using/Setting up EIS using C++
+### Using/Setting up EIS using C++
 
 original article: <https://nightails.com/2022/10/16/unreal-engine-enhanced-input-system-in-c>
 
@@ -132,8 +132,8 @@ Within the cpp file, make sure to add `#include "InputActionValue.h"` as a heade
 *Note: When using the Value parameter in the action functions, Value itself doesn't do much. It is a struct and has get methods that you can use to actually get an input action value. i.e., Value.Get<FVector2D>() returns a 2D Vector Struct that has X and Y values which can be used to determine that there is input.*
 
 ---
-### General notes for writing code for Input Action functions
-#### Pawns and movement
+## General notes for writing code for Input Action functions
+### Pawns and movement
 When adding inputs for *Pawns*, especially for movement, it is important to note that *Pawns* **DO NOT** have a movement component that automatically handle the input and move.
 
 To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
@@ -155,24 +155,24 @@ To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
   3. Use `AddMovementInput()` and pass in the Forward vector, then the value.
  
 ---
-### Widgets
+## Widgets
 Components that allow me to project 3D UI elements to the player's screen. The **Widget** Component is a 3D instance of a Widget Blueprint (WBP) that makes the WBP interactable in the game world.
 
-------------------
-#### Widget Blueprints
+
+### Widget Blueprints
 Contains the UI design elements of a widget. It is the main place where I can take functionality and gameplay elements and display it to the UI.
 
 **User Widget** will be the primary widget blueprint that can be used for most UI widgets. For more specific or complex widgets, you can use **Slate**, although it's more advanced.
 Find User Widget by: _Right clicking in CB->User Interface->Widget Blueprint->User Widget_
 
-------------------
-#### Widget Blueprint Editor
+
+### Widget Blueprint Editor
 When working with Widget Blueprints, Unreal opens up a Widget Blueprint Editor which is slightly different from the regular Blueprint editor.
 
 TODO: insert image of WBE and details on the editor
 
-------------------
-#### Display Widgets
+
+### Display Widgets
 To display the Widget Blueprint, you must first create a Widget Component for the Widget Blueprint, then you can use the function/event `Add to Viewport` depending on if you are using C++ or Blueprints.
 
 _Blueprint Version_:
@@ -181,8 +181,8 @@ _Blueprint Version_:
 3. Drag the Execution pin and connect the `Add to Viewport` node. Also connect the return pin from _Create Widget_ to the target pin of _Add to Viewport_.
 
 ---
-### Projectiles
-#### Projectile Movement
+## Projectiles
+### Projectile Movement
 Three ways to implement projectile movement:
 - Manually set location/rotation. Implemented using Tick.
 - Add an impulse. Enable/Use physics/physics system.
@@ -200,7 +200,7 @@ To add the component is the same as any other component:
 3. Set any variables/attachments.
 
 ---
-### Timers
+## Timers
 Managed by _Timer Managers_, which are of struct `FTimerManager`.
 
 A global, as well as World, Timer Manager exists on the Game Instance object and on each World.
@@ -217,10 +217,10 @@ Common Functions to use with Timers include:
 <ins>Timer Delegate</ins>: To create a `FTimerDelegate` variable, use `FTimerDelegate::CreateUObject(User Object, Callback Function, Function Params)`
 
 ---
-### Delegates (Events)
+## Delegates (Events)
 *Occurs with UPrimitiveComponents (inherited classes too).*
 
-#### Hit Events
+### Hit Events
 Delegate `OnComponentHit`: Event called when a component hits (or is hit by) something solid.
 - Returns a struct called `FComponentHitSignature`.
 - Considered a **Multicast Delegate**.
@@ -234,7 +234,7 @@ void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent
 ```
 - Allows for access to the other actor/component for different on hit scenarios. Includes affect based on physics and information for hit result.
 
-#### Damage Events
+### Damage Events
 Generated by `UGampelayStatics::ApplyDamage`
 
 `Actor->OnTakeAnyDamage.AddDynamic(User Object, Callback Function)`: used to add functions to the invocation list
@@ -250,14 +250,14 @@ void DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageTy
 ```
 - Applies damage to the actor getting damaged with damage value and type.
 
-#### Delegate Notes
+### Delegate Notes
 **Multicast Delegate**: A delegate where multiple functions can be bound to it and respond to that event. 
 - Functions are added to an *Invocation List*. 
 - *Broadcast* to functions in *Invocation List* when something happens for response.
 
 ---
-### Progamming GameMode Class
-#### AGameModeBase vs. AGameMode
+## Progamming GameMode Class
+### AGameModeBase vs. AGameMode
 AGameModeBase is one tier above AGameMode, meaning that AGameMode subclasses AGameModeBase. This makes AGameModeBase more general than AGameMode.
 
 **AGameModeBase** defines the game being played and includes:
@@ -272,7 +272,7 @@ When dealing with server-client games, it is only instantiated server-side and n
 
 When deciding to create a custom GameMode class, it is then better to use AGameModeBase since that is really where the rules of the game are being defined.
 
-#### Dealing with multiple actors in a game mode function
+### Dealing with multiple actors in a game mode function
 In the case where you have a function that passes in a generic actor, it is possible to use Casting in a conditional as a way to check what the actor being passed in is. This is especially useful for enemy actors, which you can have a large number of. 
 
 Example: `if (AEnemyActor* BadActor = Cast<AEnemyActor>(PassedActor)) { do this }`
@@ -280,7 +280,7 @@ Example: `if (AEnemyActor* BadActor = Cast<AEnemyActor>(PassedActor)) { do this 
 It is effective when the enemies are of the same type but the main takeaway is that it can lower the number of conditionals you need for that function since you do not need to be too specific.
 
 ---
-### Template Functions
+## Template Functions
 `TSubClassOf<type>`
 - Used for type safety. Forces designers to use a derived UClass or subclass of set Class. It runs a check on compilation and would return a compile error if the *type* is not a subclass of the specified UClass type.
 
