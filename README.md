@@ -7,7 +7,6 @@ Here will be all of the notes that will be important for me to retain informatio
 ## RootComponent (some general USceneComponent notes too)
 Component that is part of any new actor. It is classified as a USceneComponent and can be replaced by other Components that also derives from USceneComponent. It includes a tranform and does not include a visual representation. Can attach other components to USceneComponents.
 
----
 ## Constructing Components
 `CreateDefaultSubobject<type>(TEXT("name"))`
 
@@ -83,7 +82,6 @@ This best done using the *Actor Component* class, rather than *Scene Component*,
 The way to setup this component in C++ is just like how it is stated in this section, using `CreateDefaultSubobject<>()` and declaring its definition.
 Once the class is created, it automatically has a UCLASS macro that allows it to be used in Blueprints, so if needed then you can easily just add your new component to any blueprint, if you don't want to declare it in C++.
 
----
 ## Unreal Enhanced Input System (EIS)
 Before starting, make sure that the Enhanced Input Plugin is enabled under the *Edit->Plugins* menu. After restarting editor, change the default input classes within *Edit->Project Settings*. Go to the input section under **Engine** and look for Default Classes. Set *Default Player Input Class* to *EnhancedPlayerInput* and set *Default Input Component Class* to *EnhancedInputComponent*.
 
@@ -131,7 +129,6 @@ Within the cpp file, make sure to add `#include "InputActionValue.h"` as a heade
 
 *Note: When using the Value parameter in the action functions, Value itself doesn't do much. It is a struct and has get methods that you can use to actually get an input action value. i.e., Value.Get<FVector2D>() returns a 2D Vector Struct that has X and Y values which can be used to determine that there is input.*
 
----
 ## General notes for writing code for Input Action functions
 ### Pawns and movement
 When adding inputs for *Pawns*, especially for movement, it is important to note that *Pawns* **DO NOT** have a movement component that automatically handle the input and move.
@@ -153,8 +150,7 @@ To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
   1. Within the move function, use `Value.Get<FVector2D>()` and a dot operator to grab the X (A and D) or Y (W and S) input action value.
   2. Get the forward vector of the pawn using `GetActorForwardVector()`.
   3. Use `AddMovementInput()` and pass in the Forward vector, then the value.
- 
----
+
 ## Widgets
 Components that allow me to project 3D UI elements to the player's screen. The **Widget** Component is a 3D instance of a Widget Blueprint (WBP) that makes the WBP interactable in the game world.
 
@@ -180,7 +176,6 @@ _Blueprint Version_:
 2. Select the WBP you want to create a widget for in the _Class_ pin.
 3. Drag the Execution pin and connect the `Add to Viewport` node. Also connect the return pin from _Create Widget_ to the target pin of _Add to Viewport_.
 
----
 ## Projectiles
 ### Projectile Movement
 Three ways to implement projectile movement:
@@ -199,7 +194,6 @@ To add the component is the same as any other component:
 2. Use CreateDefaultSubobject<>() in cpp to construct the component.
 3. Set any variables/attachments.
 
----
 ## Timers
 Managed by _Timer Managers_, which are of struct `FTimerManager`.
 
@@ -216,7 +210,6 @@ Common Functions to use with Timers include:
 
 <ins>Timer Delegate</ins>: To create a `FTimerDelegate` variable, use `FTimerDelegate::CreateUObject(User Object, Callback Function, Function Params)`
 
----
 ## Delegates (Events)
 *Occurs with UPrimitiveComponents (inherited classes too).*
 
@@ -255,7 +248,6 @@ void DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageTy
 - Functions are added to an *Invocation List*. 
 - *Broadcast* to functions in *Invocation List* when something happens for response.
 
----
 ## Progamming GameMode Class
 ### AGameModeBase vs. AGameMode
 AGameModeBase is one tier above AGameMode, meaning that AGameMode subclasses AGameModeBase. This makes AGameModeBase more general than AGameMode.
@@ -279,7 +271,6 @@ Example: `if (AEnemyActor* BadActor = Cast<AEnemyActor>(PassedActor)) { do this 
 
 It is effective when the enemies are of the same type but the main takeaway is that it can lower the number of conditionals you need for that function since you do not need to be too specific.
 
----
 ## Template Functions
 `TSubClassOf<type>`
 - Used for type safety. Forces designers to use a derived UClass or subclass of set Class. It runs a check on compilation and would return a compile error if the *type* is not a subclass of the specified UClass type.
