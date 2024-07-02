@@ -171,8 +171,8 @@ TODO: insert image of WBE and details on the editor
 
 #### Display Widgets
 To display the Widget Blueprint, you must first create a Widget Component for the Widget Blueprint, then you can use the function/event `Add to Viewport` depending on if you are using C++ or Blueprints.
-
-**Blueprint Version**:
+-
+_Blueprint Version_:
 1. Place a `Create Widget` node onto the Blueprint graph
 2. Select the WBP you want to create a widget for in the _Class_ pin.
 3. Drag the Execution pin and connect the `Add to Viewport` node. Also connect the return pin from _Create Widget_ to the target pin of _Add to Viewport_.
