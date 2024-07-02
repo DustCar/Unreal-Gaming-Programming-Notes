@@ -165,8 +165,11 @@ Find User Widget by: _Right clicking in CB->User Interface->Widget Blueprint->Us
 ### Widget Blueprint Editor
 When working with Widget Blueprints, Unreal opens up a Widget Blueprint Editor which is slightly different from the regular Blueprint editor.
 
-TODO: insert image of WBE and details on the editor
+TODO: insert image of WBPE
 
+The graph that is shown first is the **Designer** editor of the WBPE. On the top right, you can see that there are two buttons, Designer and Graph. Clicking on the _Graph_ option would switch the Designer editor screen to the Event Graph editor like the Blueprint Editor.
+
+TODO: more details on designer editor
 
 ### Display Widgets
 To display the Widget Blueprint, you must first create a Widget Component for the Widget Blueprint, then you can use the function/event `Add to Viewport` depending on if you are using C++ or Blueprints.
