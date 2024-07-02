@@ -158,20 +158,20 @@ To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
 ### Widgets
 Components that allow me to project 3D UI elements to the player's screen. The **Widget** Component is a 3D instance of a Widget Blueprint (WBP) that makes the WBP interactable in the game world.
 
--
+------------------
 #### Widget Blueprints
 Contains the UI design elements of a widget. It is the main place where I can take functionality and gameplay elements and display it to the UI.
 
 **User Widget** will be the primary widget blueprint that can be used for most UI widgets. For more specific or complex widgets, you can use **Slate**, although it's more advanced.
 Find User Widget by: _Right clicking in CB->User Interface->Widget Blueprint->User Widget_
 
--
+------------------
 #### Widget Blueprint Editor
 When working with Widget Blueprints, Unreal opens up a Widget Blueprint Editor which is slightly different from the regular Blueprint editor.
 
 TODO: insert image of WBE and details on the editor
 
--
+------------------
 #### Display Widgets
 To display the Widget Blueprint, you must first create a Widget Component for the Widget Blueprint, then you can use the function/event `Add to Viewport` depending on if you are using C++ or Blueprints.
 
