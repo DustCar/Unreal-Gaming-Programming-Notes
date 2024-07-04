@@ -286,6 +286,7 @@ Extra information: <https://forums.unrealengine.com/t/why-use-tsubclassof-and-no
 `Cast<type>(object)`
 - Used to convert the object within the parenthesis to the type inside of the angle brackets. It is only possible if the type is an inheritance of the object being passed in. Used to get a more specific pointer to a more general one.
 - For example, `Cast<APlayerController>(GetController())`. This line returns APlayerController* rather than the generic AController* from GetController().
+- Although `Cast<T>(O)` returns a `T*`, the template parameter needs to be just `T`.
 
 `TSoftObjectPtr<type>`
 - Used for referencing objects which might or might not be loaded via path. Can point to actors within a level even if they are not loaded. Can be loaded **ASYNCHRONOUSLY** and does **NOT** load its value into memory.
