@@ -151,6 +151,18 @@ To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
   2. Get the forward vector of the pawn using `GetActorForwardVector()`.
   3. Use `AddMovementInput()` and pass in the Forward vector, then the value.
 
+## Interacting with World Editor components in C++
+Don't know yet if that's a good name for this section but I'll roll with it until I find a better name (07/05/24)
+
+### Getting an array of Actors from Editor
+As the title suggets, this a section describing how to get an array of a certain type of Actor from the World.
+
+This can be done with the method `UGameplayStatics::GetAllActorsOfClass()` from the _Gameplay Statics_ class folder.
+- With params: `UGameplayStatics::GetAllActorsOfClass(const UObject* WorldContextObject, TSubclassOf<AActor> ActorClass, TArray<AActor*>& OutActors)`
+- _ActorClass_ could be any `UClass*` type.
+  - When passing in a UClass, it is best to pass in its static class, i.e. `AExampleClass::StaticClass()`.
+- _OutActors_ is an out parameter that will be the array that is returned.
+
 ## Widgets
 Components that allow me to project 3D UI elements to the player's screen. The **Widget** Component is a 3D instance of a Widget Blueprint (WBP) that makes the WBP interactable in the game world.
 
