@@ -167,9 +167,19 @@ When working with Widget Blueprints, Unreal opens up a Widget Blueprint Editor w
 
 TODO: insert image of WBPE
 
+<ins>Switching between _Designer_ and _Editor_</ins>
 The graph that is shown first is the **Designer** editor of the WBPE. On the top right, you can see that there are two buttons, Designer and Graph. Clicking on the _Graph_ option would switch the Designer editor screen to the Event Graph editor like the Blueprint Editor.
 
 TODO: more details on designer editor
+
+#### Dealing with Widgets in WBPE
+In the WBPE, it includes a hierarchy with the Widget Blueprint as the root widget component, similar to how the Blueprint Editor has a hierarchy with RootComponent as root.
+
+One very important aspect of the editor is how any child component of the root widget component can be turned into a variable that can be used in Blueprints. To do so, you need to click on the component you want to make a variable, and in the _Details_ panel on the right, click on the checkbox `Is Variable` that is next to the name box.
+
+TODO: add photo reference
+
+This allows you to make the UI dynamic and ties it to your game functionality.
 
 ### Display Widgets
 To display the Widget Blueprint, you must first create a Widget Component for the Widget Blueprint, then you can use the function/event `Add to Viewport` depending on if you are using C++ or Blueprints.
