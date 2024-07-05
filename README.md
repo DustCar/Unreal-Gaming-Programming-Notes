@@ -168,6 +168,7 @@ When working with Widget Blueprints, Unreal opens up a Widget Blueprint Editor w
 TODO: insert image of WBPE
 
 <ins>Switching between _Designer_ and _Editor_</ins>
+
 The graph that is shown first is the **Designer** editor of the WBPE. On the top right, you can see that there are two buttons, Designer and Graph. Clicking on the _Graph_ option would switch the Designer editor screen to the Event Graph editor like the Blueprint Editor.
 
 TODO: more details on designer editor
