@@ -306,3 +306,8 @@ Extra information: <https://forums.unrealengine.com/t/why-use-tsubclassof-and-no
 - Used to spawn actors into the world. Using a `TSubclassOf<>` UClass allows you to pass in a BP in for UClass to spawn in actors with all necessary components.
 - To use, type `GetWorld()->SpawnActor<>()` or any other var/func that returns a UWorld object.
 
+## Blueprints Tips and Tricks
+- For node connection management, you can add "Reroute Nodes" from the node menu when Right-Clicking.
+- To disconnect a node connection, hold **Ctrl** and **Right-Click** the wire.
+- To redirect a node connection, hold **Alt** and **Right-Click** the wire.
+- If possible, you can take a large section of nodes on the BPE and turn it into a `Function` by either, highlighting the nodes, right-clicking and sending to function, or by adding a new Function by pressing the plus button next to _Functions_ on the left side of the window, and pasting the nodes into the new function.
