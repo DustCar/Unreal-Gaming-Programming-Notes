@@ -318,6 +318,14 @@ Extra information: <https://forums.unrealengine.com/t/why-use-tsubclassof-and-no
 - Used to spawn actors into the world. Using a `TSubclassOf<>` UClass allows you to pass in a BP in for UClass to spawn in actors with all necessary components.
 - To use, type `GetWorld()->SpawnActor<>()` or any other var/func that returns a UWorld object.
 
+## Special FX
+### Particle Explosions
+To add a particle explosion effect to an object, there is a function within `GameplayStatics` that accomplishes this, which is called `SpawnEmitterAtLocation`.
+
+Function call: `UGameplayStatics::SpawnEmitterAtLocation(const UObject* WorldContextObject, UParticleSystem* EmitterTemplate, FVector Location, FRotator Rotator = FRotator::ZeroRotator)`
+
+The params included are the main params that would determine where the effect would occur, but there are other params included after the Rotator param that can change the behavior of the effect.
+
 ## Blueprints Tips and Tricks
 - For node connection management, you can add "Reroute Nodes" from the node menu when Right-Clicking.
 - To disconnect a node connection, hold **Ctrl** and **Left-Click** the wire.
