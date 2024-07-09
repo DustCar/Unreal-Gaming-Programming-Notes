@@ -14,6 +14,8 @@ A Template function that constructs a component of the specified type in the ang
 
 *Ex: CreateDefaultSubobject\<UCapsuleComponent\>(TEXT("Capsule")) --> returns UCapsuleComponent\**
 
+TODO: add general steps, and clean up next few subheaders
+
 ### Forward Declaration
 Useful when needing a specific class to declare a variable type without including a separate header file. Avoids having to copy loads of code into the file needing the class, but is limited in that it does not allow access to members, use of functions, and constructing objects of the class, making it an incomplete type. To access members/use functions/construct objects, then the header file is needed. 
 ```
@@ -322,7 +324,9 @@ Extra information: <https://forums.unrealengine.com/t/why-use-tsubclassof-and-no
 ### Particle Explosions
 To add a particle explosion effect to an object, there is a function within `GameplayStatics` that accomplishes this, which is called `SpawnEmitterAtLocation`.
 
-To use it properly, you must have a `UParticleSystem*` variable set with a `UPROPERTY()` macro, and any Blueprint specifiers, in the header file. When compiling and running the solution, the BP with the class should have a new section for particle emitters. *_Note: `UParticleSystem` is not a component and is separate from a `UParticleSystemComponent`. When adding a `UParticleSystemComponent` to your class, it is just like [Constructing Components](Constructing-Components)_
+To use it properly, you must have a `UParticleSystem*` variable set with a `UPROPERTY()` macro, and any Blueprint specifiers, in the header file. When compiling and running the solution, the BP with the class should have a new section for particle emitters. 
+
+*_Note: `UParticleSystem` is not a component and is separate from a `UParticleSystemComponent`. When adding a `UParticleSystemComponent` to your class, it is just like [Constructing Components](#Constructing-Components)_
 
 TODO: add reference photo
 
