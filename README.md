@@ -334,6 +334,13 @@ Function call: `UGameplayStatics::SpawnEmitterAtLocation(const UObject* WorldCon
 
 The params included are the main params that would determine where the effect would occur, but there are other params included after the Rotator param that can change the behavior of the effect.
 
+### Sounds/Audio
+To add sounds to a class, you can declare `USoundBase*` variables with `UPROPERTY(Edit/Anywhere/Defaults)` to set a sound wave file in the BP editor. Then to play the sounds, you can use the `UGameplayStatics::PlaySoundAtLocation()` function.
+
+Function call for playing sounds: `UGameplayStatics::PlaySoundAtLocation(const UObject* WorldContextObject, USoundBase* Sound, FVector Location, float VolumeMult = 1, float PitchMult)`.
+
+There are only two overloads for this function, and there are additional optional params but these are what I feel to be used/changed in most cases.
+
 ## Blueprints Tips and Tricks
 - For node connection management, you can add "Reroute Nodes" from the node menu when Right-Clicking.
 - To disconnect a node connection, hold **Ctrl** and **Left-Click** the wire.
