@@ -322,6 +322,10 @@ Extra information: <https://forums.unrealengine.com/t/why-use-tsubclassof-and-no
 ### Particle Explosions
 To add a particle explosion effect to an object, there is a function within `GameplayStatics` that accomplishes this, which is called `SpawnEmitterAtLocation`.
 
+To use it properly, you must have a `UParticleSystem*` variable set with a `UPROPERTY()` macro, and any Blueprint specifiers, in the header file. When compiling and running the solution, the BP with the class should have a new section for particle emitters. *_Note: `UParticleSystem` is not a component and is separate from a `UParticleSystemComponent`. When adding a `UParticleSystemComponent` to your class, it is just like [Constructing Components](Constructing-Components)_
+
+TODO: add reference photo
+
 Function call: `UGameplayStatics::SpawnEmitterAtLocation(const UObject* WorldContextObject, UParticleSystem* EmitterTemplate, FVector Location, FRotator Rotator = FRotator::ZeroRotator)`
 
 The params included are the main params that would determine where the effect would occur, but there are other params included after the Rotator param that can change the behavior of the effect.
