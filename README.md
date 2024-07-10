@@ -341,6 +341,25 @@ Function call for playing sounds: `UGameplayStatics::PlaySoundAtLocation(const U
 
 There are only two overloads for this function, and there are additional optional params but these are what I feel to be used/changed in most cases.
 
+### Camera Shake
+As of 07/10/2024, I know how to add camera shake using a BP of class `CameraShakeBase` and attaching that to a C++ based BP.
+
+Within a `CameraShakeBase` BP, there is an option called _Camera Shake Pattern_ in the Details tab. It includes four patters:
+- Composite Camera Shake Pattern
+- Perlin Noise Camera Shake Pattern
+- Sequence Camera Shake Pattern
+- Wave Oscillator Camera Shake Pattern
+
+Choose any one of these patterns and tweak them until it fits your desired effect.
+
+Now to apply and use the camera shake, you just have to add a `TSubclassOf<UCameraShakeBase>` variable to the object's C++ class that you want to apply the shake to. Then you can use the Player Controller function `ClientStartCameraShake()` wherever it needs to be applied.
+
+Function call: `APlayerController::ClientStartCameraShake(TSubclassOf<class UCameraShakeBase> Shake, float Scale, ECameraShakePlaySpace PlaySpace, FRotator UserPlaySpaceRot)`
+
+The most important param here is just the first parameter since that will determine what camera shake is played. The other params have default values so it is okay to leave blank. 
+
+*_Note: As the name suggests, this camera shake is client-side and will only affect the player's screen. To use a camera shake that affects the world, look into `UCameraShakeBase::StartShake()` and do some research._
+
 ## Blueprints Tips and Tricks
 - For node connection management, you can add "Reroute Nodes" from the node menu when Right-Clicking.
 - To disconnect a node connection, hold **Ctrl** and **Left-Click** the wire.
