@@ -153,6 +153,23 @@ To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
   2. Get the forward vector of the pawn using `GetActorForwardVector()`.
   3. Use `AddMovementInput()` and pass in the Forward vector, then the value.
 
+## Creating a Player Pawn/Character
+Some general notes on using C++ to create classes for player pawns/characters and how to use it in BPs.
+
+### Camera Work
+Notes on attaching a camera for the player
+
+#### Camera Following Player
+For simple set up, in the C++ file for the Player pawn/character:
+
+1. Create a `USpringArmComponent` variable using the steps from the [Constructing Components](#Constructing-components) section, then use `SetupAttachment()` to attach it to `RootComponent`.
+2. Create a `UCameraComponent` variable using the same steps, then attach that to the spring arm component.
+3. In the BP editor for the player pawn BP, edit the angle, distance, and location of the spring arm to your liking.
+
+_Note: Usually just doing these steps would make the camera follow the player's avatar with no lag, meaning that the avatar would always look like it's in the middle of the screen and the surroundings are what moves._
+
+To adjust the above, you must enable _Camera Lag_ and _Camera Rotation Lag_ in the Details tab of the **Spring Arm component**.
+
 ## Interacting with World Editor components in C++
 Don't know yet if that's a good name for this section but I'll roll with it until I find a better name (07/05/24)
 
