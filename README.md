@@ -58,6 +58,8 @@ To expose private members for blueprints, use the `meta = (AllowPrivateAccess = 
 
 To organize components within the Details tab, use the `Category = "{title}"` parameter.
 
+**TODO: Create a section for Unreal Engine macros and move them there!!**
+
 ### Other Macros
 Some other UE macros include:
 - `UFUNCTION()`
