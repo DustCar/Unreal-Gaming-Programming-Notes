@@ -356,6 +356,8 @@ Now to apply and use the camera shake, you just have to add a `TSubclassOf<UCame
 
 Function call: `APlayerController::ClientStartCameraShake(TSubclassOf<class UCameraShakeBase> Shake, float Scale, ECameraShakePlaySpace PlaySpace, FRotator UserPlaySpaceRot)`
 
+Depending on where you will call the function, you may need to get the Player Controller. This can be done by using `GetWorld()->GetFirstPlayerController()` then using `->ClientStartCameraShake()`.
+
 The most important param here is just the first parameter since that will determine what camera shake is played. The other params have default values so it is okay to leave blank. 
 
 *_Note: As the name suggests, this camera shake is client-side and will only affect the player's screen. To use a camera shake that affects the world, look into `UCameraShakeBase::StartShake()` and do some research._
