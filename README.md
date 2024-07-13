@@ -81,10 +81,11 @@ Just like variables, the `UFUNCTION()` macro has specifiers that allow it to be 
 
 ### Creating your own components for internal details (i.e. Health, Currency, Stats)
 *Note: I'm sure the Gameplay Ability System can easily accomplish this too but this intentially skips GAS just to cover different cases.*
-This best done using the *Actor Component* class, rather than *Scene Component*, as a base since there is no need for transform or attachments.
+This is best done using the *Actor Component* class, rather than *Scene Component*, as a base since there is no need for transform or attachments.
 
-The way to setup this component in C++ is just like how it is stated in this section, using `CreateDefaultSubobject<>()` and declaring its definition.
 Once the class is created, it automatically has a UCLASS macro that allows it to be used in Blueprints, so if needed then you can easily just add your new component to any blueprint, if you don't want to declare it in C++.
+
+The way to add this component in another C++ class is just like how it is stated in this section, using `CreateDefaultSubobject<>()` and declaring its definition.
 
 ## Unreal Enhanced Input System (EIS)
 Before starting, make sure that the Enhanced Input Plugin is enabled under the *Edit->Plugins* menu. After restarting editor, change the default input classes within *Edit->Project Settings*. Go to the input section under **Engine** and look for Default Classes. Set *Default Player Input Class* to *EnhancedPlayerInput* and set *Default Input Component Class* to *EnhancedInputComponent*.
@@ -101,6 +102,8 @@ Useful Console Commands:
 - **Triggers** : Uses post-Modifier input values, or output magnitudes of other IAs, to determine whether an IA should activate. Any IA can have one or more Triggers for each input.
 
 ### Using/Setting up EIS using C++
+
+**TODO: Clean up notes and add photos**
 
 original article: <https://nightails.com/2022/10/16/unreal-engine-enhanced-input-system-in-c>
 
