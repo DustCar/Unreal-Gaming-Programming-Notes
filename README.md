@@ -105,13 +105,15 @@ Useful Console Commands:
 original article: <https://nightails.com/2022/10/16/unreal-engine-enhanced-input-system-in-c>
 
 After ensuring EIS is added and enabled, first task would be to set up the IMC within the character header and establishing SetupPlayerInputComponent in the cpp file.
- - add a UInputMappingContext* as a protected member in *Character.h*
+ - add a `UInputMappingContext*`, with `UPROPERTY(EditDefaults, BPReadOnly)` as the macro, as a protected member in *Character.h*. You may need to forward declare.
  - in the cpp file, set up SetupPlayerInputComponent. If anything is default set, other than `Super::SetupPlayerInputComponent`, then remove. We'll get back to it later on, for now is just setup.
-   1. Get player controller using `GetController()`. Make sure to `Cast<APlayerController>()` to make sure you are retrieving an APlayerController object.
-   2. Get enhanced input local player subsystem from player controller using `ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>()`.
-   3. Clear mappings using `ClearAllMappings()` then add the Input Mapping context from header file with `AddMappingContext()`.
+   1. Create an `APlayerController*` var and get player controller using `GetController()`. Make sure to `Cast<APlayerController>()` to make sure you are retrieving an `APlayerController` object.
+   2. Create a `UEnhancedInputLocalPlayerSubsystem*` var and get enhanced input local player subsystem from _Local Player_ from player controller using `ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>()`.
+   3. Clear mappings using `ClearAllMappings()` then add the Input Mapping context from header file with `AddMappingContext()` and player index 0.
 
-Next is to set up the IAs. This could be done individually by creating separate *UInputAction\** variables but would become tedious with more actions. 
+_*Note: Make sure to add `#include EnhancedInputSubsystems.h` and `#include InputMappingContext.h` to the Character cpp file._
+
+Next is to set up the IAs. This could be done individually by creating separate `UInputAction*` variables but would become tedious with more actions. 
 For better management, use a config file to hold multiple actions. This config file would subclass **DataAsset** and can hold as many actions as wanted.
 
 After creating the **InputConfig** file, make sure to add `#include "InputAction.h"` in the header file. Then add all necessary/wanted *UInputActions* as **public** members with the preferred properties of *EditDefaultsOnly* and *BlueprintReadOnly*. 
