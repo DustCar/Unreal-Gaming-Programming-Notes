@@ -52,13 +52,15 @@ As for exposing components to the Event Graph of the blueprint editor, these par
 
 *Note: Both parameters above **cannot** be used to expose private members.*
 
+**TODO: Create a section for Unreal Engine macros and move them there!!**
+
 Here are some metadata specifiers for `UPROPERTY()`:
 
 To expose private members for blueprints, use the `meta = (AllowPrivateAccess = "true")` in UPROPERTY().
 
-To organize components within the Details tab, use the `Category = "{title}"` parameter.
+To make a float variable a slider, use `meta=(UIMin = 0, UIMax = 1)`.
 
-**TODO: Create a section for Unreal Engine macros and move them there!!**
+To organize components within the Details tab, use the `Category = "{title}"` parameter.
 
 ### Other Macros
 Some other UE macros include:
