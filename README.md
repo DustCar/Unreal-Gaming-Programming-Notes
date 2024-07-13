@@ -158,6 +158,25 @@ To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
 ## Creating a Player Pawn/Character
 Some general notes on using C++ to create classes for player pawns/characters and how to use it in BPs.
 
+### Pawn vs. Character
+<ins>Pawn:</ins>
+- Anything that a player can possess
+- Can be controlled by the player
+- Does not have to be a "character", can be an object
+- Does not inherently have movement, as noted in [Pawns and movement](#Pawns-and-movement)
+
+BP children:
+- Bare bones, only includes DefaultSceneRoot
+
+<ins>Character:</ins>
+- It itself is a pawn
+- Includes character-like Movement
+- Includes Nav Mesh movement
+
+BP children:
+- Includes Capsule Component, with Arrow and Mesh component
+- Includes Character Movement component
+
 ### Camera Work
 Notes on attaching a camera for the player
 
