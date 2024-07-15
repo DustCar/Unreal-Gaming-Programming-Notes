@@ -412,6 +412,12 @@ The most important param here is just the first parameter since that will determ
 
 *_Note: As the name suggests, this camera shake is client-side and will only affect the player's screen. To use a camera shake that affects the world, look into `UCameraShakeBase::StartShake()` and do some research._
 
+## Animations
+### Skeletal Animations
+When it comes to Animating Character movement, having a **Skeleton Asset** and using that as the basis for the animation is really beneficial since using a Skeleton allows you to tie multiple meshes to the same set of animations on that Skeleton. Allows you to share multiple animations between different meshes.
+
+An example of where Skeletal Animation comes in handy is when you are creating multiple characters with different abilities. Instead of reanimating the basic movements like walking, weapon holding, jumping, etc., you can just use a Skeleton (or subclass a Skeleton) so that those basic movements are shared across characters.
+
 ## Blueprints Tips and Tricks
 - For node connection management, you can add "Reroute Nodes" from the node menu when Right-Clicking.
 - To disconnect a node connection, hold **Ctrl** and **Left-Click** the wire.
