@@ -162,6 +162,9 @@ To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
   2. Get the forward vector of the pawn using `GetActorForwardVector()`.
   3. Use `AddMovementInput()` and pass in the Forward vector, then the value.
 
+  _*Note: `AddMovementInput()` does not need to be multiplied by DeltaTime and a speed since it already accounts for framerate._
+  
+
 ## Creating a Player Pawn/Character
 Some general notes on using C++ to create classes for player pawns/characters and how to use it in BPs.
 
