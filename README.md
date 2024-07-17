@@ -37,18 +37,18 @@ UPROPERTY()
 Components declared with a `UPROPERTY()` macro with empty parentheses would have its properties hidden in the Details panel when working on a blueprint derived from the C++ classes. These components would be included in the Engine's _Reflection System_ allowing Garbage Collection (GC) to check if the components is being refrenced or refrencing something before freeing it. Without it, then GC may free a component while using it. **It's best to use the `UPROPERTY()` macro for UObjects and members that are used frequently and that are needed to make the game run properly.**
 
 In order to see the details of the blueprint's components then specifiers are needed within `UPROPERTY()` in order to see and edit the properties in the Details panel in the editor.
-- _VisibleAnywhere_ : is *visible* in the *bp editor* and *world editor*, but **cannot** be edited.
-- _EditAnywhere_ : is *visible* and can be *edited* in the *bp editor* and *world editor*.
-- _VisibleInstanceOnly_ : is **not visible** in the *bp editor*, but is *visible* in the *world editor* when an **INSTANCE** of the blueprint is dragged in.
-- _VisibleDefaultsOnly_ : is *visibile* in the *bp editor*, but **not visible** in the *world editor*.
-- _EditInstanceOnly_ : is **not visible/editable** in the *bp editor*, but is *visible/editable* in the *world editor* when an **INSTANCE** is dragged in.
-- _EditDefaultsOnly_ : is *visibile/editable* in the *bp editor*, but **not** in the *world editor*.
+- `VisibleAnywhere` : is *visible* in the *bp editor* and *world editor*, but **cannot** be edited.
+- `EditAnywhere` : is *visible* and can be *edited* in the *bp editor* and *world editor*.
+- `VisibleInstanceOnly` : is **not visible** in the *bp editor*, but is *visible* in the *world editor* when an **INSTANCE** of the blueprint is dragged in.
+- `VisibleDefaultsOnly` : is *visibile* in the *bp editor*, but **not visible** in the *world editor*.
+- `EditInstanceOnly` : is **not visible/editable** in the *bp editor*, but is *visible/editable* in the *world editor* when an **INSTANCE** is dragged in.
+- `EditDefaultsOnly` : is *visibile/editable* in the *bp editor*, but **not** in the *world editor*.
 
   *Note: For component types, like UStaticMeshComponent, it is best to use VisibleAnywhere to assign a mesh since EditAnywhere would try to change the UStaticMeshComponent pointer itself rather than changing the static mesh only.*
 
 As for exposing components to the Event Graph of the blueprint editor, these parameters would be included within the parentheses:
-- _BlueprintReadWrite_ : gives access to two nodes in the event graph, which are a getter and a setter for the specified variable.
-- _BlueprintReadOnly_ : gives access to ONLY the GETTER node for the variable.
+- `BlueprintReadWrite` : gives access to two nodes in the event graph, which are a getter and a setter for the specified variable.
+- `BlueprintReadOnly` : gives access to ONLY the GETTER node for the variable.
 
 *Note: Both parameters above **cannot** be used to expose private members.*
 
@@ -73,13 +73,13 @@ Some other UE macros include:
 `UFUNCTION()` is similar to `UPROPERTY()` but for functions. It also exposes the function to the _Reflection System_ and has its own specifiers and metadata specifiers.
 
 Just like variables, the `UFUNCTION()` macro has specifiers that allow it to be used in Blueprints.
-- _BlueprintAuthorityOnly_: makes function only execute in Blueprint code if running on a machine with network authority.
-- _BlueprintCallable_: makes function executable in Blueprints.
-- _BlueprintCosmetic_: makes function cosmetic and will not run on dedicated servers.
-- _BlueprintImplementableEvent_: makes function implementable in Blueprints.
+- `BlueprintAuthorityOnly`: makes function only execute in Blueprint code if running on a machine with network authority.
+- `BlueprintCallable`: makes function executable in Blueprints.
+- `BlueprintCosmetic`: makes function cosmetic and will not run on dedicated servers.
+- `BlueprintImplementableEvent`: makes function implementable in Blueprints.
   - ***Note**: When giving a function this specifier, Unreal expects the function to be made in Blueprints so there is no need to create the function body in C++. _However_, it is still valid to call the function in C++.
-- _BlueprintNativeEvent_: gives a function a native implementation, but is designed to be overridden by a Blueprint. Declares an additional function named the same as the main function, but with `_Implementation` added to the end, which is where code should be written. If no Blueprint override is found, the `_Implementation` method is called.
-- _BlueprintPure_: The function does not affect the owning object in any way and can be executed in a Blueprint or Level Blueprint graph. By default, a _BlueprintCallable_ const function would be exposed as a Pure function. To keep a function const, but **not** pure, use `BlueprintPure=false`. Be cautious using Pure functions for non-trivial functions as they do not cache their results. This can lead to major overhead and unexpected outputs or crashes. It is good practice to avoid outputting array properties in Blueprint pure functions. see [this article](https://raharuu.github.io/unreal/blueprint-pure-functions-complicated/) for more info on Blueprint Pure Functions.
+- `BlueprintNativeEvent`: gives a function a native implementation, but is designed to be overridden by a Blueprint. Declares an additional function named the same as the main function, but with `_Implementation` added to the end, which is where code should be written. If no Blueprint override is found, the `_Implementation` method is called.
+- `BlueprintPure`: The function does not affect the owning object in any way and can be executed in a Blueprint or Level Blueprint graph. By default, a _BlueprintCallable_ const function would be exposed as a Pure function. To keep a function const, but **not** pure, use `BlueprintPure=false`. Be cautious using Pure functions for non-trivial functions as they do not cache their results. This can lead to major overhead and unexpected outputs or crashes. It is good practice to avoid outputting array properties in Blueprint pure functions. see [this article](https://raharuu.github.io/unreal/blueprint-pure-functions-complicated/) for more info on Blueprint Pure Functions.
 
 ### Creating your own components for internal details (i.e. Health, Currency, Stats)
 *Note: I'm sure the Gameplay Ability System can easily accomplish this too but this intentially skips GAS just to cover different cases.*
@@ -449,9 +449,37 @@ To edit the new variables based on input, go to the **Event Graph** section of t
 
 _*Note: Face value, it works but depending on how many animation you include in the Blend Space, it can look very janky. This is a simple implementation of Animations and Gameplay that can be built upon on._
 
-
 ## Blueprints Tips and Tricks
 - For node connection management, you can add "Reroute Nodes" from the node menu when Right-Clicking.
 - To disconnect a node connection, hold **Ctrl** and **Left-Click** the wire.
 - To redirect a node connection, hold **Alt** and hold **Left-Click** on the wire, then drag to new pin.
 - If possible, you can take a large section of nodes on the BPE and turn it into a `Function` by either, highlighting the nodes, right-clicking and sending to function, or by adding a new Function by pressing the plus button next to _Functions_ on the left side of the window, and pasting the nodes into the new function.
+
+# Gameplay Logic/Math
+This section includes notes I have about certain gameplay logic and math that could be useful in any other engine, not just Unreal Engine. Some names/notes may not be exactly in other engines but an equivalence may be present.
+
+## Transforms
+A **Transform** is an object's _Location_, _Rotation_, and _Scale_.
+- _Location_: object's position in the (local/global) space.
+- _Rotation_: object's angle (tilt).
+- _Scale_: object's size.
+
+### Global vs. Local Space
+<ins>Global Space</ins>: Refers to the space in which the World is the main object and any object's transform is relative to the World itself.
+
+Example: A character placed in a scene would most likely have the World as its parent making its transform relative to the World, meaning it is being affected in the _Global Space_. Position (0,0,0) of the character would lead to the origin of the World.
+
+<ins>Local Space</ins>: Refers to the space in which a Component is the main object and any other object's transform is relative to that Component.
+
+Example: A torch with a character as its parent makes its transform relative to the character. The torch's transform being relative to the character, rather than the World, is the _Local Space_ that the torch resides in. Meaning that, if the character moves, then the torch moves with it. Position (0,0,0) of the torch would lead to the origin of the character, **NOT** the World.
+
+### Transformation
+Transformation is taking a part of the transform of an object, or all of it, and converting the space from Local to Global, and vice-versa.
+
+Types of transformations:
+- Position Vector Transform: transforms an object's position/location vector from local space to global space.
+- Direction Vector Transform: transforms an object's direction vector from local space to global space.
+- Rotator Transform: transforms an object's rotator from local space to global space.
+- Inverse Transform: transforms any of the objects transform properties from global space to local space.
+
+
