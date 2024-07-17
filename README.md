@@ -440,8 +440,7 @@ TODO: add reference photo
 A 2D Blend Space is better than the Blend node because the Blend Space can include more than 2 animations, which could cover many different scenarios, with just one Blend Space, as compared to using multiple Blend nodes in multiple sequences. 
 
 ### Connecting Animations to Gameplay
-<ins>2D Blend Space (Variable based):</ins>
-
+## 2D Blend Space (Variable based)
 After creating a 2D Blend Space animation, you can add the BS to you ABP. When placed on the Anim Graph, you can see that the BS takes in two inputs based on the name of the two axis' it was given. The value of the axis' would determine what animation will be played.
 
 To modify these floats, it is best to first create two new float variables (preferrably the same name as the axis' pins) and connecting them to the input pins of the BS.
