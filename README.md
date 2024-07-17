@@ -412,7 +412,7 @@ The most important param here is just the first parameter since that will determ
 
 *_Note: As the name suggests, this camera shake is client-side and will only affect the player's screen. To use a camera shake that affects the world, look into `UCameraShakeBase::StartShake()` and do some research._
 
-## Animations
+## Character Animations
 ### Skeletal Animations
 When it comes to Animating Character movement, having a **Skeleton Asset** and using that as the basis for the animation is really beneficial since using a Skeleton allows you to tie multiple meshes to the same set of animations on that Skeleton. Allows you to share multiple animations between different meshes.
 
@@ -425,7 +425,7 @@ Includes an _Anim Graph_ which looks similar to an Event Graph, which the ABP al
 
 TODO: Include photos of ABP Editor
 
-### Blending Animations
+### Blending Character Animations
 To blend together animations, there is a node called **Blend** in the Anim Graph, which takes two animation poses and a float as input, and outputs a blend of the poses based on the float (0, all pose A, to 1, all pose B). 
 
 However, this is not the type of blending animations that you may think of when going from one animation to another, such as going from a walk to idle state when releasing the left thumbstick or the W key. This blend, quite literally blends two animations together.
