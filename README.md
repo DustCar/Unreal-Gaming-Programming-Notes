@@ -418,6 +418,38 @@ When it comes to Animating Character movement, having a **Skeleton Asset** and u
 
 An example of where Skeletal Animation comes in handy is when you are creating multiple characters with different abilities. Instead of reanimating the basic movements like walking, weapon holding, jumping, etc., you can just use a Skeleton (or subclass a Skeleton) so that those basic movements are shared across characters.
 
+### Animation Blueprints
+Blueprints that hold most Animation details and that would enable animations on a character when assigned.
+
+Includes an _Anim Graph_ which looks similar to an Event Graph, which the ABP also has, but has an Output Pose node which will wire the final animation pose to the character. Unlike the normal BP Editor, ABPs do not have a components hierarchy on the left and has two new tabs on the right called "Anim Preview Editor" and "Asset Browser".
+
+TODO: Include photos of ABP Editor
+
+### Blending Animations
+To blend together animations, there is a node called **Blend** in the Anim Graph, which takes two animation poses and a float as input, and outputs a blend of the poses based on the float (0, all pose A, to 1, all pose B). 
+
+However, this is not the type of blending animations that you may think of when going from one animation to another, such as going from a walk to idle state when releasing the left thumbstick or the W key. This blend, quite literally blends two animations together.
+
+To blend animations in a way that it goes from one state to another, the better method would be to use a `2D Blend Space`.
+
+#### 2D Blend Space
+When creating a 2D Blend Space, it creates a new _Animation_ asset. In the Animation Editor, it includes a 2-axis graph in the middle where you can place **multiple** _Animation Sequences_ onto the graph and it will blend the animations based on where the preview node is on the graph.
+
+TODO: add reference photo
+
+A 2D Blend Space is better than the Blend node because the Blend Space can include more than 2 animations, which could cover many different scenarios, with just one Blend Space, as compared to using multiple Blend nodes in multiple sequences. 
+
+### Connecting Animations to Gameplay
+<ins>2D Blend Space (Variable based):</ins>
+After creating a 2D Blend Space animation, you can add the BS to you ABP. When placed on the Anim Graph, you can see that the BS takes in two inputs based on the name of the two axis' it was given. The value of the axis' would determine what animation will be played.
+
+To modify these floats, it is best to first create two new float variables (preferrably the same name as the axis' pins) and connecting them to the input pins of the BS.
+
+To edit the new variables based on input, go to the **Event Graph** section of the ABP and there will be two nodes, an Event named _Blueprint Update Animation_ and a fuction called _Try Get Pawn Owner_. Depending on what the BS is accomplishing, you can get some value (i.e. _Get Velocity_ for speed), get its float variation (_Vector Length_ for _Get Velocity_) and then use the _Set_ function for whichever variable to update them. Make sure to connect the execution pin of _Blueprint Update Animation_ to the _Set_ function if not done already.
+
+_*Note: Face value, it works but depending on how many animation you include in the Blend Space, it can look very janky. This is a simple implementation of Animations and Gameplay that can be built upon on._
+
+
 ## Blueprints Tips and Tricks
 - For node connection management, you can add "Reroute Nodes" from the node menu when Right-Clicking.
 - To disconnect a node connection, hold **Ctrl** and **Left-Click** the wire.
