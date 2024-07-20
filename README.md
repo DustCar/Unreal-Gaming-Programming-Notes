@@ -4,9 +4,6 @@ Here will be all of the notes that will be important for me to retain informatio
 
 # Unreal Engine
 
-## RootComponent (some general USceneComponent notes too)
-Component that is part of any new actor. It is classified as a USceneComponent and can be replaced by other Components that also derives from USceneComponent. It includes a tranform and does not include a visual representation. Can attach other components to USceneComponents.
-
 ## Constructing Components
 `CreateDefaultSubobject<type>(TEXT("name"))`
 
@@ -202,6 +199,13 @@ It is good to use a _Spring Arm Component_ with the Camera because it prevents t
 _*Note: Usually just doing these steps would make the camera follow the player's avatar with no lag, meaning that the avatar would always look like it's in the middle of the screen and the surroundings are what moves._
 
 To make the camera not as snappy, you must enable _Camera Lag_ and _Camera Rotation Lag_ in the Details tab of the **Spring Arm component**.
+
+## Creating Objects
+The most common parent class for creating a new object, especially one that will be used in the world, would be the _Actor_ class. It is probably best to also create a BP deriving the class so that you can see changes you add to it after closing the editor and re-building the project.
+
+One major thing to note about BPs deriving from a C++ class is that they do **NOT** have a _Default Scene Root_ component. When adding any new component to the C++ class, the highest component in that hierarchy would become the root component.
+
+So it is best to create a `USceneComponent*` var in the C++ class and set that as the root so that the Actor will have a transform.
 
 ## Interacting with World Editor components in C++
 Don't know yet if that's a good name for this section but I'll roll with it until I find a better name (07/05/24)
@@ -447,7 +451,16 @@ To modify these floats, it is best to first create two new float variables (pref
 
 To edit the new variables based on input, go to the **Event Graph** section of the ABP and there will be two nodes, an Event named _Blueprint Update Animation_ and a fuction called _Try Get Pawn Owner_. Depending on what the BS is accomplishing, you can get some value (i.e. _Get Velocity_ for speed), get its float variation (_Vector Length_ for _Get Velocity_) and then use the _Set_ function for whichever variable to update them. Make sure to connect the execution pin of _Blueprint Update Animation_ to the _Set_ function if not done already.
 
-_*Note: Face value, it works but depending on how many animation you include in the Blend Space, it can look very janky. This is a simple implementation of Animations and Gameplay that can be built upon on._
+_*Note: This method does not factor in foot sliding, just general integration. But at face value, it works and depending on how many animations you include in the Blend Space, it can look okay. This is a simple implementation of Animations and Gameplay that can be built upon on._
+
+#### Foot Sliding
+To fix foot sliding, you can calculate the speed at which the character moves in the animation. This can be done by checking the "foot" of a character's skeleton in the Animation editor preview and calculating the speed of the foot's animation using this formula:
+
+`foot speed = (y_finish - y_start)/(t_finish - t_start)`
+
+The y coordinate coming from the foot's **WORLD** location and t coming from the time of the action in the animation (the value in the second parentheses of the Animation preview timeline).
+
+To calculate the value, you just use a calculator and note down the values since the main goal is to find the speed and use the value to place the value as the constraints for the axis in the Blend Space editor. If there are multiple moving animations, then each animation would be placed at their respective speeds.
 
 ## Blueprints Tips and Tricks
 - For node connection management, you can add "Reroute Nodes" from the node menu when Right-Clicking.
