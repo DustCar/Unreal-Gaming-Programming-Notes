@@ -200,12 +200,26 @@ _*Note: Usually just doing these steps would make the camera follow the player's
 
 To make the camera not as snappy, you must enable _Camera Lag_ and _Camera Rotation Lag_ in the Details tab of the **Spring Arm component**.
 
-## Creating Objects
+## Objects via Actors
+### Creating Objects
 The most common parent class for creating a new object, especially one that will be used in the world, would be the _Actor_ class. It is probably best to also create a BP deriving the class so that you can see changes you add to it after closing the editor and re-building the project.
 
 One major thing to note about BPs deriving from a C++ class is that they do **NOT** have a _Default Scene Root_ component. When adding any new component to the C++ class, the highest component in that hierarchy would become the root component.
 
-So it is best to create a `USceneComponent*` var in the C++ class and set that as the root so that the Actor will have a transform.
+So it is best to create a `USceneComponent*` var in the C++ class and set that as the root so that the Actor will have a transform and a root component.
+
+### Spawning Actors
+TODO: Add photos
+
+To spawn an actor, Unreal has a C++ function called `UWorld::SpawnActor<>()` that is part of the UWorld class and is a template function. In order to call this function, you must have a `UWorld` variable, so it is common to use `GetWorld()->SpawnActor<>()` to get a UWorld var then to use the function.
+
+Function: `SpawnActor<T>(UClass* Class, FVector Location, FRotator Rotation)`
+- SpawnActor() has multiple overloadds but these params are most common when simply spawning in an actor.
+- Since it takes in a _UClass*_ you must have a `TSubclassOf<T>` class variable of the type of actor you want to spawn.
+- When creating the `TSubclassOf<T>` var, make sure to add a `UPROPERTY(EditDefaultsOnly)`, so that the class can be assigned on the BP and so that the class doesn't change during play.
+- This function returns a variable of type _T_ so make sure to assign a variable (local/global) so that you can do something with the spawned actor.
+
+Once set up, make sure to open the BP of the class that is spawning the actor and assign the **BLUEPRINT** version of the actor to the main BP, not the actual class.
 
 ## Interacting with World Editor components in C++
 Don't know yet if that's a good name for this section but I'll roll with it until I find a better name (07/05/24)
