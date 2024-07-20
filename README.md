@@ -200,6 +200,30 @@ _*Note: Usually just doing these steps would make the camera follow the player's
 
 To make the camera not as snappy, you must enable _Camera Lag_ and _Camera Rotation Lag_ in the Details tab of the **Spring Arm component**.
 
+## Character Meshes
+The main type of mesh that characters will most often use would be a **Skeletal Mesh**. These meshes allow designers to connect the mesh to a **Skeleton** asset to be used for animating the characters movements. 
+
+### Skeletons
+A **Skeleton** asset is also good for attaching other Actors/objects to the character via sockets, which makes them also able to be animated or used in some way. Anything that is attached to the Skeleton gets placed in a hierarchy similar to scene hierarchy called the **Skeleton Tree**. The Skeleton Tree holds two types of children, _Bones_ and _Sockets_.
+
+#### Setting Sockets
+To setup a Socket for Actor Attachment:
+1. Go to Skeleton Tree of character and find the bone to attach the socket to.
+2. Right-click on the bone and `Add Socket` (Rename if needed)
+3. Go to C++ file, use the function `AttachToComponent()` with the actor you want to attach. i.e. `SimpleActor->AttachToComponent()`
+4. Use `SetOwner()` with the same actor to establish the ownership of the attached actor to the current class you are in.
+
+Function: `AttachToComponent(USceneComponent* Parent, const FAttachmentTransformRules& AttachmentRules, FName SocketName)`
+- Attaches the Actor to the component with _Socketname_
+- AttachmentRules are transform rules that the Actor would follow and has four preset options: `KeepRelativeTransform`, `KeepWorldTransform`, `SnapToTargetNotIncludingScale`, `SnapToTargetIncludingScale`
+
+#### Hiding Bones
+Sometimes there will be a moment where you want to hide a Bone that is part of a Skeleton Tree, be it from a preset character or to hide a placeholder. One C++ function that can accomplish that is the `HideBoneByName()` function.
+
+Function: `USkinnedMeshComponent::HideBoneByName(FName BoneName, EPhysBodyOp PhysBodyOption)`
+- a `TEXT()` macro can usually be passed in for _BoneName_
+- `EPhysBodyOp` has three options: `PBO_None`, `PBO_Term`, `PBO_MAX`
+
 ## Objects via Actors
 ### Creating Objects
 The most common parent class for creating a new object, especially one that will be used in the world, would be the _Actor_ class. It is probably best to also create a BP deriving the class so that you can see changes you add to it after closing the editor and re-building the project.
@@ -220,6 +244,9 @@ Function: `SpawnActor<T>(UClass* Class, FVector Location, FRotator Rotation)`
 - This function returns a variable of type _T_ so make sure to assign a variable (local/global) so that you can do something with the spawned actor.
 
 Once set up, make sure to open the BP of the class that is spawning the actor and assign the **BLUEPRINT** version of the actor to the main BP, not the actual class.
+
+### Actor Ownership
+Actors actually do **NOT** have a hierarchy between each other like the Scene Components do. Instead they have an Ownership dynamic in which an Actor can own another and that can affect how certain events can turn out (i.e. who damages what, whose inventory to focus on). This is especially true for Delegate Events like _OnTakeAnyDamage()_.
 
 ## Interacting with World Editor components in C++
 Don't know yet if that's a good name for this section but I'll roll with it until I find a better name (07/05/24)
@@ -432,7 +459,9 @@ The most important param here is just the first parameter since that will determ
 
 ## Character Animations
 ### Skeletal Animations
-When it comes to Animating Character movement, having a **Skeleton Asset** and using that as the basis for the animation is really beneficial since using a Skeleton allows you to tie multiple meshes to the same set of animations on that Skeleton. Allows you to share multiple animations between different meshes.
+As stated earlier, characters usually have a Skeletal Mesh that is usually used in tandem with a Skeleton, and that these Skeletons can be used for animation. This is called **Skeletal Animation** and reason to use Skeletons for animation is because of how _Bones_ of the Skeleton Tree work. All _Bones_ are their own "component", so they can be edited in a way that each little part can be animated in some way.
+
+Another large benefit of using a Skeleton is that it allows you to tie multiple meshes to the same set of animations on that Skeleton, allowing you to share multiple animations between different meshes.
 
 An example of where Skeletal Animation comes in handy is when you are creating multiple characters with different abilities. Instead of reanimating the basic movements like walking, weapon holding, jumping, etc., you can just use a Skeleton (or subclass a Skeleton) so that those basic movements are shared across characters.
 
