@@ -184,11 +184,12 @@ BP children:
 - Includes Capsule Component, with Arrow and Mesh component
 - Includes Character Movement component
 
-### Camera Work
-Notes on attaching a camera for the player
+## POVs
+Notes for different character POVs
 
-#### Camera Following Player
-For simple set up, in the C++ file for the Player pawn/character:
+### Third Person POV
+#### Camera Set Up
+For simple camera following player set up, in the C++ file for the Player pawn/character do:
 
 1. Create a `USpringArmComponent` variable using the steps from the [Constructing Components](#Constructing-components) section, then use `SetupAttachment()` to attach it to `RootComponent`.
 2. Create a `UCameraComponent` variable using the same steps, then attach that to the spring arm component.
@@ -199,6 +200,11 @@ It is good to use a _Spring Arm Component_ with the Camera because it prevents t
 _*Note: Usually just doing these steps would make the camera follow the player's avatar with no lag, meaning that the avatar would always look like it's in the middle of the screen and the surroundings are what moves._
 
 To make the camera not as snappy, you must enable _Camera Lag_ and _Camera Rotation Lag_ in the Details tab of the **Spring Arm component**.
+
+#### Useful Functions
+Functions that can be useful for 3rd person that I don't have a section for
+
+- `AController::GetPlayerViewPoint(&FVector Location, &FRotator Rotator)`: Returns location and rotation of the player's viewpoint. Useful for aiming the 3rd person character using the viewport.
 
 ## Character Meshes
 The main type of mesh that characters will most often use would be a **Skeletal Mesh**. These meshes allow designers to connect the mesh to a **Skeleton** asset to be used for animating the characters movements. 
@@ -421,13 +427,25 @@ To add a particle explosion effect to an object, there is a function within `Gam
 
 To use it properly, you must have a `UParticleSystem*` variable set with a `UPROPERTY()` macro, and any Blueprint specifiers, in the header file. When compiling and running the solution, the BP with the class should have a new section for particle emitters. 
 
-*_Note: `UParticleSystem` is not a component and is separate from a `UParticleSystemComponent`. When adding a `UParticleSystemComponent` to your class, it is just like [Constructing Components](#Constructing-Components)_
+*_Note: `UParticleSystem` is not a component and is separate from a `UParticleSystemComponent`. 
 
-TODO: add reference photo
+.h file:
+```
+UPROPERTY(EditAnywhere)
+class UParticleSystem* ExampleParticles;
+```
+
+TODO: add reference photo of BP
 
 Function call: `UGameplayStatics::SpawnEmitterAtLocation(const UObject* WorldContextObject, UParticleSystem* EmitterTemplate, FVector Location, FRotator Rotator = FRotator::ZeroRotator)`
 
 The params included are the main params that would determine where the effect would occur, but there are other params included after the Rotator param that can change the behavior of the effect.
+
+There is another function like the one above called `SpawnEmitterAttached`, which spawns particle effects on a socket that is attaches to a component. It will need a `UParticleSystem*` like the other, but also a `USceneComponent*`, that will be the component it is attaching to, and a `FName` of the socket name.
+
+Function call: `UGameplayStatics::SpawnEmitterAttached(UParticleSystem* EmitterTemplate, USceneComponent* AttachToComponent, FName AttachPointName)`
+
+These are the important params needed to make the particles spawns, at minimum. There are more params included like _Location_, _Rotation_, and others that will affect the particle effect.
 
 ### Sounds/Audio
 To add sounds to a class, you can declare `USoundBase*` variables with `UPROPERTY(Edit/Anywhere/Defaults)` to set a sound wave file in the BP editor. Then to play the sounds, you can use the `UGameplayStatics::PlaySoundAtLocation()` function.
