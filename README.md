@@ -160,7 +160,6 @@ To move a *Pawn* with inputs, there are two ways (AFAIK on March 9th, 2024):
   3. Use `AddMovementInput()` and pass in the Forward vector, then the value.
 
   _*Note: `AddMovementInput()` does not need to be multiplied by DeltaTime and a speed since it already accounts for framerate._
-  
 
 ## Creating a Player Pawn/Character
 Some general notes on using C++ to create classes for player pawns/characters and how to use it in BPs.
@@ -184,6 +183,33 @@ BP children:
 - Includes Capsule Component, with Arrow and Mesh component
 - Includes Character Movement component
 
+### Taking/Dealing Damage, Character Specific
+By character specific, it means that it is not as general as the Delegate Event version (explained in [this section](#Damage-events))
+
+For character specific, we will be using the `AActor::TakeDamage()` function that takes in a `DamageEvent` var. There are multiple subtypes of _DamageEvent_, two most common ones are `FPointDamageEvent` and `FRadialDamageEvent`.
+
+Function: `AActor::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)`
+
+- _EventInstigator_ is the AController* of the Actor that owns the Actor dealing the damage (i.e. owner of gun)
+
+<ins>Guns or single point weapons:</ins>
+
+**This first section is the "Applying Damage" section:**
+
+Damage event: `FPointDamageEvent`
+
+These damage events have constructors that would be used to establish the damage. The constructor with params is `SampleEvent(float InDamage, const FHitResult& InHitInfo, FVector const& InShotDirection, TSubclassOf<UDamageType> InDamageTypeClass)`
+
+TODO: insert reference photo
+
+Raycasting would most commonly be used with this function so you should have a `FHitResult` var that you would use to pass in as a param. You will also be using the hit result var to get the actor that is being hit (using `HitResultVar->GetActor()`).
+
+So first check if hit actor is null, if not then create the DamageEvent, then call `TakeDamage()` with the hit actor like `HitActor->TakeDamage()`
+
+**This next section deals with the actor actually taking damage:**
+
+
+
 ## POVs
 Notes for different character POVs
 
@@ -200,6 +226,32 @@ It is good to use a _Spring Arm Component_ with the Camera because it prevents t
 _*Note: Usually just doing these steps would make the camera follow the player's avatar with no lag, meaning that the avatar would always look like it's in the middle of the screen and the surroundings are what moves._
 
 To make the camera not as snappy, you must enable _Camera Lag_ and _Camera Rotation Lag_ in the Details tab of the **Spring Arm component**.
+
+#### Line Tracing
+A method of Raycasting that performs a collision trace (check) along a line and returns the first object that the trace hits or returns true if a hit is found. Raycasting is very effective for aiming using the player's viewpoint, 1st person or 3rd person. Helps in determining if a player is actually looking at something.
+
+There are multiple types of Raycasting and it includes:
+- `UWorld::LineTraceSingleByChannel(struct FHitResult& OutHit,const FVector& Start,const FVector& End,ECollisionChannel TraceChannel)`: Traces a ray that returns the first hit if blocking hit is found by the specified _Trace Channel_.
+- `UWorld::LineTraceSingleByObjectType(struct FHitResult& OutHit,const FVector& Start,const FVector& End,const FCollisionObjectQueryParams& ObjectQueryParams)`: Traces a ray that returns the first hit if blocking hit matches _Object Type_.
+- `UWorld::LineTraceSingleByProfile(struct FHitResult& OutHit, const FVector& Start, const FVector& End, FName ProfileName)`: Traces a ray that returns the first hit if blocking hit matches _Profile_ description.
+
+There are also other versions of the three functions mentioned above, such as:
+- `LineTraceTestBy*(const FVector& Start, const FVector& End, {condition})` versions: Traces a ray and returns true if blocking hit matches.
+- `LineTraceMultiBy*(TArray<struct FHitResult>& OutHits, const FVector& Start, const FVector& End, {condition)` versions: Traces a ray and returns a list of the objects that matches the conditions.
+
+<ins>Trace Channel Raycasting:</ins>
+When using Trace Channel Raycasting, there are preset collision channels available for use already (Visibility and Camera), but you can also create a new Trace Channel that you can modify its Trace profile in the presets without breaking the existing Trace profiles.
+
+To create a new Trace Channel:
+- Go to _Project Settings->Engine->Collision_
+- Under _Trace Channels_, click _New Trace Channel_, give it a name and its _Default Response_
+- Under _Presets_, open any of the project profiles and you should see your new trace channel under _Trace Type_. Then just set how the channel should react to specified profiles.
+
+***BIG NOTE: When trying to use the new channel with the Raycast functions, there is no ECollisionChannel with the name of our new Trace Channel like the presets.**
+
+In order to find out what ECollisionChannel our new channel uses, you must open up the `DefaultEngine.ini` file in the `%PROJECT_PATH%/Config` folder. The file can be opened as a .txt file. Once opened CTRL+F to find your trace channel's name. To know what ECollisionChannel, its name is of the form `ECC_GameTraceChannel{num}`.
+
+There is a limit of 18 custom channels and it usually goes by the order in which new channels are added (unless channels are removed) so the first custom channel should be `ECC_GameTraceChannel1`, but always make sure check the file first.
 
 #### Useful Functions
 Functions that can be useful for 3rd person that I don't have a section for
@@ -269,13 +321,12 @@ This can be done with the method `UGameplayStatics::GetAllActorsOfClass()` from 
 ## Widgets
 Components that allow me to project 3D UI elements to the player's screen. The **Widget** Component is a 3D instance of a Widget Blueprint (WBP) that makes the WBP interactable in the game world.
 
-
 ### Widget Blueprints
 Contains the UI design elements of a widget. It is the main place where I can take functionality and gameplay elements and display it to the UI.
 
 **User Widget** will be the primary widget blueprint that can be used for most UI widgets. For more specific or complex widgets, you can use **Slate**, although it's more advanced.
-Find User Widget by: _Right clicking in CB->User Interface->Widget Blueprint->User Widget_
 
+Find `User Widget` by: _Right clicking in CB->User Interface->Widget Blueprint->User Widget_
 
 ### Widget Blueprint Editor
 When working with Widget Blueprints, Unreal opens up a Widget Blueprint Editor which is slightly different from the regular Blueprint editor.
@@ -357,7 +408,9 @@ void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent
 - Allows for access to the other actor/component for different on hit scenarios. Includes affect based on physics and information for hit result.
 
 ### Damage Events
-Generated by `UGampelayStatics::ApplyDamage`
+Another way to deal/take damage. Usually best paired with a component that deals with health (specifically for OnTakeAnyDamage(), ApplyDamage() can be from anyone).
+
+Generated by `UGampelayStatics::ApplyDamage(AActor* DamagedActor, float BaseDamage, AController* EventInstigator, AActor* DamageCauser, TSubclassOf<UDamageType> DamageTypeClass)`
 
 `Actor->OnTakeAnyDamage.AddDynamic(User Object, Callback Function)`: used to add functions to the invocation list
 
