@@ -609,4 +609,64 @@ Types of transformations:
 - Rotator Transform: transforms an object's rotator from local space to global space.
 - Inverse Transform: transforms any of the objects transform properties from global space to local space.
 
+# General C++
+Section that covers some important, or neat, C++ info that I have missed.
+
+## Virtual Methods
+`Virtual Methods` are functions that classes hold that can be overridden by a child class of a parent class. If a child class wants to override a method that the parent class holds, then the method must have _virtual_ in front of it, else an error would occur stating that the same-named function has nothing to override. 
+
+Now these functions are best used with pointers. If you are directly using the class type then you can call the same function and do not need to override. Generally you would use virtual methods if you know that a class is going to be subclassed frequently and that its functions are going to be overridden.
+
+Example:
+```
+class Gun
+{
+  public:
+  virtual void Fire()
+  {
+      std::cout << "Bang!" << std::endl;
+  }
+};
+
+class Launcher : public Gun
+{
+  public:
+  void Fire()
+  {
+      std::cout << "BOOM!" << std::endl;
+  }
+};
+```
+Here is an example class with a child class, here is main with a Gun pointer, pointing to the address of a Gun variable TestGun:
+```
+int main()
+{
+  Gun TestGun;
+
+  Launcher TestLauncher;
+
+  Gun* GunPtr;
+  GunPtr = &TestGun;
+  GunPtr->Fire();
+}
+```
+Running this code would return the line `"Bang!"`. If we were to change the pointer to point to the address of TestLauncher like this:
+```
+  GunPtr = &TestLauncher;
+  GunPtr->Fire();
+```
+Then the function would return `"BOOM!"` instead. Using a virtual method allows for a process called **Dynamic Dispatching**, in which the compiler would check which version of a virtual function a pointer would call at run time.
+
+Now for this case, since the subclassed function in Launcher does not have the _override_ tag then any mistake with Launcher's Fire() function would lead to the compiler choosing the parent's Fire() function. To add a safety net, attach _override_ to the function in the child classes to make sure that it is overriding an actual method.
+```
+class Launcher : public Gun
+{
+  public:
+  void Fire() override
+  {
+      std::cout << "BOOM!" << std::endl;
+  }
+};
+```
+Now if there is any problem with Launcher's Fire() function not having the same name as the parent class, or the parent class not having that function, or that the parent class's function not being virtual, then an error would occur now that the child class function has the _override_ tag.
 
