@@ -184,17 +184,15 @@ BP children:
 - Includes Character Movement component
 
 ### Taking/Dealing Damage, Character Specific
-By character specific, it means that it is not as general as the Delegate Event version (explained in [this section](#Damage-events))
+By character specific, it means that it is not as general as the Delegate Event version (explained in [this section](#Damage-events)), in which that one uses a separate component to handle health.
 
-For character specific, we will be using the `AActor::TakeDamage()` function that takes in a `DamageEvent` var. There are multiple subtypes of _DamageEvent_, two most common ones are `FPointDamageEvent` and `FRadialDamageEvent`.
+For character specific, we will be using the `AActor::TakeDamage()` function that takes in a `DamageEvent` var and adding a variable that holds health **ON** the character class. There are multiple subtypes of _DamageEvent_, two most common ones are `FPointDamageEvent` and `FRadialDamageEvent`.
 
 Function: `AActor::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)`
 
 - _EventInstigator_ is the AController* of the Actor that owns the Actor dealing the damage (i.e. owner of gun)
 
 <ins>Guns or single point weapons:</ins>
-
-**This first section is the "Applying Damage" section:**
 
 Damage event: `FPointDamageEvent`
 
@@ -206,9 +204,7 @@ Raycasting would most commonly be used with this function so you should have a `
 
 So first check if hit actor is null, if not then create the DamageEvent, then call `TakeDamage()` with the hit actor like `HitActor->TakeDamage()`
 
-**This next section deals with the actor actually taking damage:**
-
-
+To make the character actually take damage then we would override the `TakeDamage()` function to edit the character's health information. Since `TakeDamage()` is a virtual method then it can be overridden by using the _override_ keyword on the function in our character header and cpp file. Once done then we can do whatever we need to do in TakeDamage() and use the `InDamage` value to decrease the character's health and effectively "take damage".
 
 ## POVs
 Notes for different character POVs
@@ -317,6 +313,8 @@ This can be done with the method `UGameplayStatics::GetAllActorsOfClass()` from 
 - _ActorClass_ could be any `UClass*` type.
   - When passing in a UClass, it is best to pass in its static class, i.e. `AExampleClass::StaticClass()`.
 - _OutActors_ is an out parameter that will be the array that is returned.
+
+## Using C++ Functions in Blueprint
 
 ## Widgets
 Components that allow me to project 3D UI elements to the player's screen. The **Widget** Component is a 3D instance of a Widget Blueprint (WBP) that makes the WBP interactable in the game world.
@@ -556,6 +554,9 @@ When creating a 2D Blend Space, it creates a new _Animation_ asset. In the Anima
 TODO: add reference photo
 
 A 2D Blend Space is better than the Blend node because the Blend Space can include more than 2 animations, which could cover many different scenarios, with just one Blend Space, as compared to using multiple Blend nodes in multiple sequences. 
+
+#### Blend Animations by Boolean
+In the Anim Graph, there is a node called `Blend Poses by Bool` which plays a certain animation/pose depending on the truth value passed in. Good for switching between animations with a simple condition, like "Is Dead?".
 
 ### Connecting Animations to Gameplay
 #### 2D Blend Space (Variable based)
