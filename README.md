@@ -364,7 +364,7 @@ To see if it is connected properly and running, you have to run the BT, which yo
 - Open the AIController C++ file and in _BeginPlay()_, first check if the UBehaviorTree is not null, then call the function `RunBehaviorTree(SampleBTVariable)`
 - Recompile, open the BT asset and add a sequence node.
 - Hook it up to Root, play the game, eject, then open the BT asset.
-- If the Root is highlighted and the sequence node is also highlighted on its perimeter then the BT is working properly.
+- If the Root is highlighted then the BT is working properly.
 
 ## Interacting with World Editor components in C++
 Don't know yet if that's a good name for this section but I'll roll with it until I find a better name (07/05/24)
