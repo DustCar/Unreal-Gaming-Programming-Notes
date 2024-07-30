@@ -302,6 +302,70 @@ Once set up, make sure to open the BP of the class that is spawning the actor an
 ### Actor Ownership
 Actors actually do **NOT** have a hierarchy between each other like the Scene Components do. Instead they have an Ownership dynamic in which an Actor can own another and that can affect how certain events can turn out (i.e. who damages what, whose inventory to focus on). This is especially true for Delegate Events like _OnTakeAnyDamage()_.
 
+## AI Enemies
+### Setup
+Setup for applying AI to Character BPs you add into the world that is not the player.
+
+1. Create an AI Controller C++ class (To find the class, check "All Classes" and type for it).
+2. Create a BP deriving off of the new C++ class.
+3. Open the character/pawn BP that you want the AI controller to use.
+4. Go to the details panel and find "AI Controller Class" under the _Pawn_ category, change the class to the new BP AI controller class you made.
+
+### Simple AI Aiming
+<ins>Functions for Aiming:</ins>
+
+- `AAIController::SetFocalPoint(FVector NewFocus, EAIFocusPriority::Type InPriority = EAIFocusPriority::Gameplay)`
+- `AAIController::SetFocus(AActor* NewFocus, EAIFocusPriority::Type InPriority = EAIFocusPriority::Gameplay)`
+- `AAIController::ClearFocus(EAIFocusPriority::Type InPriority)`: used to clear any focuses.
+
+These functions tells the AI to look at a certain point or at a certain actor. Good for when the enemy is idle or when player gets an Enemy's attention.
+
+### Simple AI Line of Sight
+Function: `AAIController::LineOfSightTo(const AActor* Other, FVector ViewPoint = FVector(ForceInit), bool bAlternateChecks = false)`
+
+This is a function that returns a bool on whether the _Other_ actor is in the line of sight of the AI actor. Unreal already covers where the "eyes" are on a character so no need to specify the view point on a character.
+
+_**Note**: This function allows the AI to see you even if you are behind its back. It will see you unless you are obstructed from its view. To have a LOS that is more configurable with its view radius, use an AIPerceptionComponent._
+
+### Simple AI Movement
+Before an AI can move, we have to first tell it where it can and cannot go. This can be done with a **Nav Mesh Bounds Volume**. The Nav Mesh Volume would map out the areas of the map that the AI can create a path on, which essentially allows it to know where obstacles are. It is essential because AI Controllers include a _PathFollowingComponent_ that looks for a NavMesh and then creates a path to follow. It also means that there is no need to make a path following algorithm from scratch.
+
+<ins>Move Functions:</ins>
+
+- `AAIController::MoveToLocation(const FVector& Dest, float AcceptanceRadius = -1)`
+- `AAIController::MoveToActor(AActor* Goal, float AcceptanceRadius = -1)`: The goal destination for this function will always update to make sure AI is at destination. So if placed in Tick(), AI would continuously follow Actor.
+- `Acceptance Radius` is the number of units from the goal destination until the AI stops following.
+
+_Note: There many more params but they have default values and these are the main ones that are needed._
+
+These functions move the character to the specified location or actor and stops when within the acceptance radius. 
+
+Other Functions:
+- `AAIController::StopMovement()`: Function that stops the current movement the controller is performing
+
+### Behavior Trees
+_These trees are tools separate from Blueprints, and also do not have a true C++ class, but can be interfaced in C++._
+
+_Using a Behavior Tree means that the C++ code above would not be used and instead the functionality would be in the Behavior Trees. A BehaviorTree var would be attached to the AIController C++ class to link them._
+
+A tree graph that holds different behaviors for an AI. It helps with setting up more complex behaviors and making movement between them more natural. Linked with a Blackboard asset.
+
+**Blackboard**: "memory" of the AI. Similar to Animation System, where we set up properties to let the AI know what to do and when to do things.
+
+<ins>Setup:</ins>
+
+1. In the Editor, go to Content Browser and under "Artificial Intelligence", click on "Behavior Tree" (Names prefixed with "BT").
+2. Under the same category, click on "Blackboard" and create a new asset (Names prefixed with "BB").
+3. Open the Behavior Tree and in the Details tab look for the "Blackboard Asset" dropdown. Link it with your new Blackboard asset. Close the editor.
+4. Open the AIController C++ file and add a new `UBehaviorTree` private variable. Set it _EditAnywhere_. Save and Recompile.
+5. Open the AIController BP and attach the BT asset to the UBehaviorTree variable.
+
+To see if it is connected properly and running, you have to run the BT, which you have to do anyways. To do so:
+- Open the AIController C++ file and in _BeginPlay()_, first check if the UBehaviorTree is not null, then call the function `RunBehaviorTree(SampleBTVariable)`
+- Recompile, open the BT asset and add a sequence node.
+- Hook it up to Root, play the game, eject, then open the BT asset.
+- If the Root is highlighted and the sequence node is also highlighted on its perimeter then the BT is working properly.
+
 ## Interacting with World Editor components in C++
 Don't know yet if that's a good name for this section but I'll roll with it until I find a better name (07/05/24)
 
@@ -318,44 +382,6 @@ This can be done with the method `UGameplayStatics::GetAllActorsOfClass()` from 
 When trying to use your C++ class functions in Blueprints, you first must add any of the Blueprint UFUNCTION() macros to expose the functions to BPs.
 
 Once made sure, then within the event graph of your BP, use "Try Get Pawn/Actor/etc." to get the base class of your C++ class (i.e. Pawn for a Character). We then "Cast To" whatever the name of the C++ class you are trying to use functions from. That should be the general way to use functions from C++, although I'm sure there are other ways to get the class other than Cast.
-
-## Widgets
-Components that allow me to project 3D UI elements to the player's screen. The **Widget** Component is a 3D instance of a Widget Blueprint (WBP) that makes the WBP interactable in the game world.
-
-### Widget Blueprints
-Contains the UI design elements of a widget. It is the main place where I can take functionality and gameplay elements and display it to the UI.
-
-**User Widget** will be the primary widget blueprint that can be used for most UI widgets. For more specific or complex widgets, you can use **Slate**, although it's more advanced.
-
-Find `User Widget` by: _Right clicking in CB->User Interface->Widget Blueprint->User Widget_
-
-### Widget Blueprint Editor
-When working with Widget Blueprints, Unreal opens up a Widget Blueprint Editor which is slightly different from the regular Blueprint editor.
-
-TODO: insert image of WBPE
-
-<ins>Switching between _Designer_ and _Editor_</ins>
-
-The graph that is shown first is the **Designer** editor of the WBPE. On the top right, you can see that there are two buttons, Designer and Graph. Clicking on the _Graph_ option would switch the Designer editor screen to the Event Graph editor like the Blueprint Editor.
-
-TODO: more details on designer editor
-
-#### Dealing with Widgets in WBPE
-In the WBPE, it includes a hierarchy with the Widget Blueprint as the root widget component, similar to how the Blueprint Editor has a hierarchy with RootComponent as root.
-
-One very important aspect of the editor is how any child component of the root widget component can be turned into a variable that can be used in Blueprints. To do so, you need to click on the component you want to make a variable, and in the _Details_ panel on the right, click on the checkbox `Is Variable` that is next to the name box.
-
-TODO: add photo reference
-
-This allows you to make the UI dynamic and ties it to your game functionality.
-
-### Display Widgets
-To display the Widget Blueprint, you must first create a Widget Component for the Widget Blueprint, then you can use the function/event `Add to Viewport` depending on if you are using C++ or Blueprints.
-
-_Blueprint Version_:
-1. Place a `Create Widget` node onto the Blueprint graph
-2. Select the WBP you want to create a widget for in the _Class_ pin.
-3. Drag the Execution pin and connect the `Add to Viewport` node. Also connect the return pin from _Create Widget_ to the target pin of _Add to Viewport_.
 
 ## Projectiles
 ### Projectile Movement
@@ -453,6 +479,45 @@ In the case where you have a function that passes in a generic actor, it is poss
 Example: `if (AEnemyActor* BadActor = Cast<AEnemyActor>(PassedActor)) { do this }`
 
 It is effective when the enemies are of the same type but the main takeaway is that it can lower the number of conditionals you need for that function since you do not need to be too specific.
+
+## Widgets
+Components that allow me to project 3D UI elements to the player's screen. The **Widget** Component is a 3D instance of a Widget Blueprint (WBP) that makes the WBP interactable in the game world.
+
+### Widget Blueprints
+Contains the UI design elements of a widget. It is the main place where I can take functionality and gameplay elements and display it to the UI.
+
+**User Widget** will be the primary widget blueprint that can be used for most UI widgets. For more specific or complex widgets, you can use **Slate**, although it's more advanced.
+
+Find `User Widget` by: _Right clicking in CB->User Interface->Widget Blueprint->User Widget_
+
+### Widget Blueprint Editor
+When working with Widget Blueprints, Unreal opens up a Widget Blueprint Editor which is slightly different from the regular Blueprint editor.
+
+TODO: insert image of WBPE
+
+<ins>Switching between _Designer_ and _Editor_</ins>
+
+The graph that is shown first is the **Designer** editor of the WBPE. On the top right, you can see that there are two buttons, Designer and Graph. Clicking on the _Graph_ option would switch the Designer editor screen to the Event Graph editor like the Blueprint Editor.
+
+TODO: more details on designer editor
+
+#### Dealing with Widgets in WBPE
+In the WBPE, it includes a hierarchy with the Widget Blueprint as the root widget component, similar to how the Blueprint Editor has a hierarchy with RootComponent as root.
+
+One very important aspect of the editor is how any child component of the root widget component can be turned into a variable that can be used in Blueprints. To do so, you need to click on the component you want to make a variable, and in the _Details_ panel on the right, click on the checkbox `Is Variable` that is next to the name box.
+
+TODO: add photo reference
+
+This allows you to make the UI dynamic and ties it to your game functionality.
+
+### Display Widgets
+To display the Widget Blueprint, you must first create a Widget Component for the Widget Blueprint, then you can use the function/event `Add to Viewport` depending on if you are using C++ or Blueprints.
+
+_Blueprint Version_:
+1. Place a `Create Widget` node onto the Blueprint graph
+2. Select the WBP you want to create a widget for in the _Class_ pin.
+3. Drag the Execution pin and connect the `Add to Viewport` node. Also connect the return pin from _Create Widget_ to the target pin of _Add to Viewport_.
+
 
 ## Template Functions
 `TSubClassOf<type>`
