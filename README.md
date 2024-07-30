@@ -315,6 +315,9 @@ This can be done with the method `UGameplayStatics::GetAllActorsOfClass()` from 
 - _OutActors_ is an out parameter that will be the array that is returned.
 
 ## Using C++ Functions in Blueprint
+When trying to use your C++ class functions in Blueprints, you first must add any of the Blueprint UFUNCTION() macros to expose the functions to BPs.
+
+Once made sure, then within the event graph of your BP, use "Try Get Pawn/Actor/etc." to get the base class of your C++ class (i.e. Pawn for a Character). We then "Cast To" whatever the name of the C++ class you are trying to use functions from. That should be the general way to use functions from C++, although I'm sure there are other ways to get the class other than Cast.
 
 ## Widgets
 Components that allow me to project 3D UI elements to the player's screen. The **Widget** Component is a 3D instance of a Widget Blueprint (WBP) that makes the WBP interactable in the game world.
