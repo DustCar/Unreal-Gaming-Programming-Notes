@@ -343,14 +343,14 @@ These functions move the character to the specified location or actor and stops 
 Other Functions:
 - `AAIController::StopMovement()`: Function that stops the current movement the controller is performing
 
-### Behavior Trees
+## Behavior Trees
 _These trees are tools separate from Blueprints, and also do not have a true C++ class, but can be interfaced in C++._
 
 _Using a Behavior Tree means that the C++ code above would not be used and instead the functionality would be in the Behavior Trees. A BehaviorTree var would be attached to the AIController C++ class to link them._
 
 A tree graph that holds different behaviors for an AI. It helps with setting up more complex behaviors and making movement between them more natural. Linked with a Blackboard asset.
 
-**Blackboard**: "memory" of the AI. Similar to Animation System, where we set up properties to let the AI know what to do and when to do things.
+**Blackboard**: "memory" of the AI. Similar to Animation System, where we set up properties to let the AI know what to do and when to do things. Properties held in the Blackboard are called "Keys".
 
 <ins>Setup:</ins>
 
@@ -365,6 +365,30 @@ To see if it is connected properly and running, you have to run the BT, which yo
 - Recompile, open the BT asset and add a sequence node.
 - Hook it up to Root, play the game, eject, then open the BT asset.
 - If the Root is highlighted then the BT is working properly.
+
+### Blackboard Keys
+Properties that are saved to be used by the Behavior Tree.
+
+Just like the Behavior Tree, the Blackboard component can also be interfaced in C++. Using the newly created Behavior Tree variable from earlier, we can use the function `AIController::GetBlackboardComponent()` to get the Blackboard component to work with. Either save it in a variable or re-use the function.
+
+Now to actually set some Keys for the Blackboard through C++, you must:
+1. Open the AIController C++ file where the Behavior Tree was set up.
+2. Get the Blackboard component associated with BT using the function above.
+3. Use the `->` operator and find the `SetValueAs{type}(const FName& KeyName, F{type} Value)` functions. Pick based on which value you want to set _KeyName_ as.
+4. Pass in the value you want to set _KeyName_ as.
+
+After that, build and in the editor go to your Blackboard Asset. In the BB editor, on the left side, create a new Key and name it the exact same as the name you gave it in the C++ file. Make sure that the typing is correct.
+
+To check if it is working, compile then play and eject to the Blackboard then checking if the new Key has a value set.
+
+### Setting up Behaviors
+As seen from the set up, the behavior tree has a tree graph with a node called "ROOT". This "ROOT" node can only have one child node, so trying to pull another child node would break the link with its initial child and link with the new one. However, nodes after the root node can have multiple children.
+
+To create a behavior on the tree, there are two types of nodes that we need to accomplish this, _Composite_ nodes and _Task_ nodes.
+- **Composites**: nodes that determine how child nodes will be executed.
+- **Tasks**: nodes that actually performs actions.
+
+So to create a new task behavior, first choose what type of _Composite_ node you want. Then drag off the composite node and select what tasks you want the AI to perform. This node can have as many child nodes that you want, same goes for its child nodes. When adding nodes, it is possible to use composite nodes as children to create nested behaviors. Not all child nodes have to be _Tasks_
 
 ## Interacting with World Editor components in C++
 Don't know yet if that's a good name for this section but I'll roll with it until I find a better name (07/05/24)
