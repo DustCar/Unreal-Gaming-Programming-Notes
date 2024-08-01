@@ -381,6 +381,8 @@ After that, build and in the editor go to your Blackboard Asset. In the BB edito
 
 To check if it is working, compile then play and eject to the Blackboard then checking if the new Key has a value set.
 
+To clear a value you have set, you can use the `ClearValue(const FName& KeyName)` function to do so.
+
 ### Setting up Behaviors
 As seen from the set up, the behavior tree has a tree graph with a node called "ROOT". This "ROOT" node can only have one child node, so trying to pull another child node would break the link with its initial child and link with the new one. However, nodes after the root node can have multiple children.
 
@@ -389,6 +391,30 @@ To create a behavior on the tree, there are two types of nodes that we need to a
 - **Tasks**: nodes that actually performs actions.
 
 So to create a new task behavior, first choose what type of _Composite_ node you want. Then drag off the composite node and select what tasks you want the AI to perform. This node can have as many child nodes that you want, same goes for its child nodes. When adding nodes, it is possible to use composite nodes as children to create nested behaviors. Not all child nodes have to be _Tasks_
+
+#### Composites
+There are 3 types of Composite nodes:
+- **Selector**: Executes child nodes from left to right and stops executing when one of its children _succeeds_. If one child succeeds, the Selector succeeds.
+- **Sequence**: Executes child nodes from left to right and stops executing when one of its children _FAILS_. If all children succeed, the Sequence succeeds.
+- **Simple Parallel**: A node that runs a main task while it is running other nodes in the backgraound. Finished when the main task finishes.
+
+### Decorators
+Add-ons for nodes that change how the node will be ran. They are essentially requirements that have to be met before a node can be ran. Decorators can be used on both Composites and Tasks.
+
+There are multiple options, including:
+- _Blackboard_: Decorator node that bases its condition on a BB key. If the Key is set then execute, else do not.
+- _Conditional Loop_: Decorator node that loops node execution as long as the condition is satisfied.
+- _TimeLimit_: Decorator node that aborts execution after a set time. Resets the timer when the node becomes relevant again.
+- etc...
+
+#### Flow Control
+With Decorators, there are additional options that can affect how the BT flows. These options can be found under **Flow Control**. It is in the details tab of a Decorator when it is clicked on. Most decorator nodes have these and it has a setting called "Obsever aborts".
+
+**Observer Aborts** has four options:
+- _None_: Default. Do nothing.
+- _Self_: Abort the attached node.
+- _Lower Priority_: Lowers the priority of other nodes within the same level of the attached node when the condition is satisfied for the current node.
+- _Both_: Does both _Self_ and _Lower Priority_ modes when their respective conditions occur.
 
 ## Interacting with World Editor components in C++
 Don't know yet if that's a good name for this section but I'll roll with it until I find a better name (07/05/24)
