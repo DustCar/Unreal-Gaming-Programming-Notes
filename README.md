@@ -416,6 +416,43 @@ With Decorators, there are additional options that can affect how the BT flows. 
 - _Lower Priority_: Lowers the priority of other nodes within the same level of the attached node when the condition is satisfied for the current node.
 - _Both_: Does both _Self_ and _Lower Priority_ modes when their respective conditions occur.
 
+### Tasks
+List of different tasks I have used and what they do:
+- **Move To**: Moves actor to another actor or a set Blackboard Key location.
+- **Wait**: Waits for a specified amount of time.
+
+### Creating Custom Tasks in C++
+Before creating a new C++ class, first go to the build file of your project (suffixed with .build.cs) and add `"GameplayTasks"` to the `PublicDependcyModuleNames` list. This is to avoid the error the compiler would have if you were to create a Behavior Tree Task (BTT) class without it.
+
+After reopening the editor, create a new C++ class and in "All Classes" look for "BTTask" classes. This would show all the different types of BT Task nodes that you can subclass off of. The most generic class is the `BTTaskNode` class.
+
+Once you have chosen a node to subclass and the files have been created. First thing I would suggest to do is set the name of your node to be readable in the editor.
+
+In the header file:
+- Create a constructor with no params
+
+In the cpp file:
+- Create the definition if not done already.
+- Set a new name using `NodeName = TEXT("New Name");`
+
+To implement the functionality of the node, we need to use the `ExecuteTask()` function from the `UBTNode` parent class.
+
+Function header: `virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;`
+
+Create the definition and make sure that the `Super::ExecuteTask(OwnerComp, NodeMemory)` function is included. Depending on your IDE (I use Rider), it may have the option to create the definition for you and include the Super line with it.
+
+The Super function itself returns a `EBTNodeResult::Succeeded` enum so you can just implement the task's functionality then return `Super::ExecuteTask(OwnerComp, NodeMemory)` at the end.
+
+#### Using the Pawn in Task
+To be able to use the pawn:
+1. Get the owner of the BT component using `GetAIOwner()`. Check if nullptr.
+2. Use `GetPawn()` with -> operator on `GetAIOwner()` to get pawn.
+3. Cast the type of Pawn you are trying to get. Check if nullptr.
+
+Nodes I have subclassed:
+- `BTTaskNode`: Base BTTask node with no special properties.
+- `BTTask_BlackboardBase`: a BTTaskNode with the option of Blackboard key options coded in.
+
 ## Interacting with World Editor components in C++
 Don't know yet if that's a good name for this section but I'll roll with it until I find a better name (07/05/24)
 
