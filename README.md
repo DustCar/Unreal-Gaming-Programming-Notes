@@ -407,6 +407,8 @@ There are multiple options, including:
 - _TimeLimit_: Decorator node that aborts execution after a set time. Resets the timer when the node becomes relevant again.
 - etc...
 
+To add Decorators, right-click on the node you want, and select "Add Decorator".
+
 #### Flow Control
 With Decorators, there are additional options that can affect how the BT flows. These options can be found under **Flow Control**. It is in the details tab of a Decorator when it is clicked on. Most decorator nodes have these and it has a setting called "Obsever aborts".
 
@@ -452,6 +454,13 @@ To be able to use the pawn:
 Nodes I have subclassed:
 - `BTTaskNode`: Base BTTask node with no special properties.
 - `BTTask_BlackboardBase`: a BTTaskNode with the option of Blackboard key options coded in.
+
+### Behavior Tree Services
+BTServices are add-on functionality that runs every tick or every so often when the node, or any path under the node is being used. They are different from _Simple Parallel_ in that they work with the node its on and do not affect other nodes.
+
+Adding a Service is similar to Adding a Decorator. Same with creating a custom BTService in C++. The only difference this time is that you are searching for `BTService` classes
+
+BTServices are great for keeping track of BB values, setting or clearing them, and could be an alternative to using the AIController C++ class for it. It is more customizable when it comes to using Tick since you can change how often a service can run, rather than just always running on each frame.
 
 ## Interacting with World Editor components in C++
 Don't know yet if that's a good name for this section but I'll roll with it until I find a better name (07/05/24)
