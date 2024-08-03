@@ -223,8 +223,13 @@ _*Note: Usually just doing these steps would make the camera follow the player's
 
 To make the camera not as snappy, you must enable _Camera Lag_ and _Camera Rotation Lag_ in the Details tab of the **Spring Arm component**.
 
-#### Line Tracing
-A method of Raycasting that performs a collision trace (check) along a line and returns the first object that the trace hits or returns true if a hit is found. Raycasting is very effective for aiming using the player's viewpoint, 1st person or 3rd person. Helps in determining if a player is actually looking at something.
+#### Useful Functions
+Functions that can be useful for 3rd person that I don't have a section for
+
+- `AController::GetPlayerViewPoint(&FVector Location, &FRotator Rotator)`: Returns location and rotation of the player's viewpoint. Useful for aiming the 3rd person character using the viewport.
+
+## Line Tracing
+A method of Raycasting that performs a collision trace (check) along a line and returns the first object that the trace hits or returns true if a hit is found. Raycasting is very effective for aiming using the player's viewpoint, 1st person or 3rd person. Helps in determining if a player, or other actor, is actually looking at something.
 
 There are multiple types of Raycasting and it includes:
 - `UWorld::LineTraceSingleByChannel(struct FHitResult& OutHit,const FVector& Start,const FVector& End,ECollisionChannel TraceChannel)`: Traces a ray that returns the first hit if blocking hit is found by the specified _Trace Channel_.
@@ -249,10 +254,14 @@ In order to find out what ECollisionChannel our new channel uses, you must open 
 
 There is a limit of 18 custom channels and it usually goes by the order in which new channels are added (unless channels are removed) so the first custom channel should be `ECC_GameTraceChannel1`, but always make sure check the file first.
 
-#### Useful Functions
-Functions that can be useful for 3rd person that I don't have a section for
+### Ignoring Actors/Components
+In addition to the params mentioned earlier, there is an additional parameter after _ECollisionChannel_ that takes in an `FCollisionQueryParams` variable. This struct holds any extra queries that you would want to add to the trace. This includes what actors and/or components to ignore.
 
-- `AController::GetPlayerViewPoint(&FVector Location, &FRotator Rotator)`: Returns location and rotation of the player's viewpoint. Useful for aiming the 3rd person character using the viewport.
+To implement the parameter:
+1. create a `FCollisionQueryParams` var called "Params".
+2. Use the dot operator and find the functions `AddIgnoredActor(AActor* InActor)` or `AddIgnoredComponent(UPrimitiveComponent* InIgnoredComponent)`.
+3. Pass in the respective actor or component to be ignored.
+4. Add _Params_ to the LineTrace function call as the parameter after ECollisionChannel.
 
 ## Character Meshes
 The main type of mesh that characters will most often use would be a **Skeletal Mesh**. These meshes allow designers to connect the mesh to a **Skeleton** asset to be used for animating the characters movements. 
@@ -568,6 +577,49 @@ When dealing with server-client games, it is only instantiated server-side and n
 - Handles match state
 
 When deciding to create a custom GameMode class, it is then better to use AGameModeBase since that is really where the rules of the game are being defined.
+
+### Making Multiple GameModes based on one GameModeBase class
+As stated previously, it is best to start with a GameModeBase as it is more generic, allowing you to create a fully custom mode. This gives us the possibility to subclass this GameModeBase class and create multiple different game modes with different rules by using [virtual functions](#Virtual-Methods).
+
+With the use of virtual functions, we can have one, or multiple, function(s) in the base GameModeBase class and any new subclassing GameMode would be able to override that function and implement its own functionality. This also allows our code to use Casting to accept any game modes as long as it has the base class GameMode.
+
+Example:
+```
+// Base GameModeBase .h
+class ASampleGameModeBase
+{
+public:
+    virtual void DoSomething(APawn* Pawn);
+};
+
+// Foo GameMode .h
+class FooGameMode : public ASampleGameModeBase
+{
+public:
+    void DoSomething(APawn* Pawn) override
+    {
+        std::cout << "Foo Mode active\n";
+    };
+};
+
+// Bar GameMode .h
+class BarGameMode : public ASampleGameModeBase
+{
+public:
+    void DoSomething(APawn* Pawn) override
+    {
+        std::cout << "Bar Mode active\n";
+    };
+};
+```
+```
+// some function
+   ASampleGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ASampleGameModeBase>();
+   GameMode->DoSomething(nullptr);
+```
+If we had a variable of the base class and called the function `DoSomething()`, depending on what GameMode is set in the project settings, the respective functions would be called. _"Foo Mode Active"_ for **FooGameMode** and _"Bar Mode Active"_ for **BarGameMode**.
+
+Knowing this, we can then make multiple types of GameModes based off of one GameModeBase class we setup, as long as the virtual functions are set up correctly.
 
 ### Dealing with multiple actors in a game mode function
 In the case where you have a function that passes in a generic actor, it is possible to use Casting in a conditional as a way to check what the actor being passed in is. This is especially useful for enemy actors, which you can have a large number of. 
