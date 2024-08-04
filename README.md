@@ -474,7 +474,7 @@ BTServices are great for keeping track of BB values, setting or clearing them, a
 ## Interacting with World Editor components in C++
 Don't know yet if that's a good name for this section but I'll roll with it until I find a better name (07/05/24)
 
-### Getting an array of Actors from Editor
+### Getting an array of Actors from World
 As the title suggets, this a section describing how to get an array of a certain type of Actor from the World.
 
 This can be done with the method `UGameplayStatics::GetAllActorsOfClass()` from the _Gameplay Statics_ class folder.
@@ -628,7 +628,7 @@ Example: `if (AEnemyActor* BadActor = Cast<AEnemyActor>(PassedActor)) { do this 
 
 It is effective when the enemies are of the same type but the main takeaway is that it can lower the number of conditionals you need for that function since you do not need to be too specific.
 
-## Widgets
+## UI Widgets
 Components that allow me to project 3D UI elements to the player's screen. The **Widget** Component is a 3D instance of a Widget Blueprint (WBP) that makes the WBP interactable in the game world.
 
 ### Widget Blueprints
@@ -658,6 +658,11 @@ TODO: add photo reference
 
 This allows you to make the UI dynamic and ties it to your game functionality.
 
+### Interfacing Widgets with C++
+One major thing to note when using C++ with UI Widgets is that the main file that you will be implementing the use of the widgets should be in the **PlayerController** files. This is because PlayerController is what the player is actually using. Meaning that if you want to open a menu, or press buttons on a main menu, that does not possess a Pawn then the PlayerController would be the place to put the UI since no possession is needed.
+
+Additionally, keeping any HUD and UI elements all in one place is much easier to handle than spreading it out and making a ton of cross class referencing. The PlayerController is also important in communicating with the GameMode of your level, it is most commonly used as an intermediate bewteen the GameMode and your HUD/UI. So anything that the HUD or UI might need from GameMode, it can talk to the PlayerController to obtain that thing.
+
 ### Display Widgets
 To display the Widget Blueprint, you must first create a Widget Component for the Widget Blueprint, then you can use the function/event `Add to Viewport` depending on if you are using C++ or Blueprints.
 
@@ -666,6 +671,11 @@ _Blueprint Version_:
 2. Select the WBP you want to create a widget for in the _Class_ pin.
 3. Drag the Execution pin and connect the `Add to Viewport` node. Also connect the return pin from _Create Widget_ to the target pin of _Add to Viewport_.
 
+_C++ Version_:
+1. In the header file of your PlayerController Class, create a `TSubclassOf<UUserWidget> SampleClass` variable. Make it `EditAnywhere`.
+2. In the cpp file, include the header `#include "Blueprint/UserWidget.h"`.
+3. Use the function `CreateWidget(UObject* OwningObject, TSubclassOf<UUserWidget> UserWidgetClass = WidgetT::StaticClass())` to create the widget. Pass in `this` for _OwningObject_ since the PlayerController is a UObject that can own a widget. Pass in your class variable from step 1 for the _UserWidgetClass_. This function returns a `UUserWidget*`.
+4. check if the returned UserWidget from step 3 is nullptr then use the -> operator to find the `AddToViewport()` function.
 
 ## Template Functions
 `TSubClassOf<type>`
@@ -687,6 +697,11 @@ Extra information: <https://forums.unrealengine.com/t/why-use-tsubclassof-and-no
 `UWorld::SpawnActor<type>(UClass, Location, Rotation)`
 - Used to spawn actors into the world. Using a `TSubclassOf<>` UClass allows you to pass in a BP in for UClass to spawn in actors with all necessary components.
 - To use, type `GetWorld()->SpawnActor<>()` or any other var/func that returns a UWorld object.
+
+`TActorRange<type>(UWorld*)`
+- `#include EngineUtils.h`
+- Iterates over all instances of the _type_ passed in.
+- Does not dynamically allocate memory like `UGameplayStatics::GetAllActorsOfClass()`, since I think it does not return an array.
 
 ## Special FX
 ### Particle Explosions
