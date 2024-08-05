@@ -736,6 +736,30 @@ Function call for playing sounds: `UGameplayStatics::PlaySoundAtLocation(const U
 
 There are only two overloads for this function, and there are additional optional params but these are what I feel to be used/changed in most cases.
 
+Another Function: `UGameplayStatics::SpawnSoundAttached(USoundBase* Sound, USceneComponent* AttachToComponent, FName AttachPointName)`
+
+Similar to SpawnEmitterAttached(), _SpawnSoundAttached()_ will play audio at the location of a socket that is attached to a component. Takes in the same parameters except the first, which takes in a _USoundBase*_.
+
+#### Sound Cue
+An asset that can modify the behavior of an audio playback. Very useful for adding variations to your sounds, or tying multiple sounds together.
+
+Some Important nodes:
+- **Random**: A node that takes in multiple WAV sounds and randomly chooses one to play.
+- **Modulator**: Randomizes the pitch and volume of the inputted sound between a range of two value.
+
+Helpful tips for nodes:
+- General tips:
+  - Rather than manually adding inputs into a node, you can instead select all sounds you need in the content browser then right click in the editor to see new "\<node name\>: Multiple WAVs" options that automatically set up the nodes for you.
+ 
+#### Attenuation/Spatialization
+**Attenuation** is the behavior of sound being loud at close distance and becoming quieter as you are getting far from it. 
+
+**Spatialization** is the behavior of playing a sound to the corresponding speaker from where it was played in game (e.g. when a sound happens to the left of the character, the sound is played on the left side speaker).
+
+Adding these behaviors to our sounds makes the game feel more vibrant and dynamic. In Unreal, most Sound Base assets have an _Attenuation Settings_ tab as part of their settings. To set up that setting, we have to create a **Sound Attenuation Asset** (Naming convention "ATT_Name").
+
+**Sound Attenuation Assets** include tons of settings that can affect the attenuation of sounds, including distance, air absorption, listener focus, and also includes settings for spatialization.
+
 ### Camera Shake
 As of 07/10/2024, I know how to add camera shake using a BP of class `CameraShakeBase` and attaching that to a C++ based BP.
 
