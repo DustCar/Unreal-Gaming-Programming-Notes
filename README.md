@@ -677,6 +677,9 @@ _C++ Version_:
 3. Use the function `CreateWidget(UObject* OwningObject, TSubclassOf<UUserWidget> UserWidgetClass = WidgetT::StaticClass())` to create the widget. Pass in `this` for _OwningObject_ since the PlayerController is a UObject that can own a widget. Pass in your class variable from step 1 for the _UserWidgetClass_. This function returns a `UUserWidget*`.
 4. check if the returned UserWidget from step 3 is nullptr then use the -> operator to find the `AddToViewport()` function.
 
+### Remove Widgets
+To remove widgets, use the function `WidgetName->RemoveFromParent()` (deprecated version: `RemoveFromViewport()`).
+
 ## Template Functions
 `TSubClassOf<type>`
 - Used for type safety. Forces designers to use a derived UClass or subclass of set Class. It runs a check on compilation and would return a compile error if the *type* is not a subclass of the specified UClass type.
