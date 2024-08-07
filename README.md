@@ -849,6 +849,25 @@ Just like Blendspaces, Aim offsets use the same animation editor and animation g
 
 An important function that is useful for obtaining the rotation of a player's camera aim is the `Get Base Aim Rotation` function node which takes in an _APawn*_ and returns a _Rotator_ value. If the Pawn has a controller, this function automatically returns a rotator pointing to where the player's camera is looking, if its player controlled, or where the Pawn rotation is facing if it is an AI.
 
+### Animation State Machine
+A system that consists of states and transitions that play animations depending on what state the character is currently in (i.e. walking, running, jumping). ASMs are very powerful when it comes to blending together complex animations.
+
+To create a new ASM, right click in the Anim Graph and find "State Machine". This will create a new variable on the left "My Blueprint" tab, underneath the "Animation Graphs" row.
+
+In an ASM, there will be an bare graph with only an "Entry" node that signals where the ASM will start from. Here is where you can create **States** and connect them to each other. When connecting a State to another State, a **Transition** is created. Double-clicking on a _State_ or _Transition_ opens up a new graph for each item.
+
+**States:**
+- The main area where you will be placing Animations and Blend Spaces that plays during a specific movement state.
+- Outputs an Animation Pose like the Anim graph.
+
+**Transitions:**
+- A node that holds logic that determines if one state is going to another.
+- Requires a boolean as output.
+
+General tips:
+- When wanting to transition to another state w/o a bool but instead with the ending of an animation, clicking on a transition node should show an option under the "Transition" tab called `Automatic Rule Based on Sequence Player in State`. This will do a crossfade into the next state.
+- It is possible to nest State Machines, so if there are any animations that are being blended by bool then it might be good to use state machines instead.
+
 ## Blueprints Tips and Tricks
 - For node connection management, you can add "Reroute Nodes" from the node menu when Right-Clicking.
 - To disconnect a node connection, hold **Ctrl** and **Left-Click** the wire.
