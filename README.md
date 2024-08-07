@@ -663,6 +663,11 @@ One major thing to note when using C++ with UI Widgets is that the main file tha
 
 Additionally, keeping any HUD and UI elements all in one place is much easier to handle than spreading it out and making a ton of cross class referencing. The PlayerController is also important in communicating with the GameMode of your level, it is most commonly used as an intermediate bewteen the GameMode and your HUD/UI. So anything that the HUD or UI might need from GameMode, it can talk to the PlayerController to obtain that thing.
 
+### Binding Widget Component Values
+For certain paramaters of a widget component, there is an option called "Bind", which allows designers to bind a Blueprint function, or a C++ function return value to the parameter. These functions allow the UI to become dynamic and is a simple way in connecting gameplay to the UI.
+
+If there are no functions to bind then the editor would create an empty function with a beginning node and a return node of what the function should be returning.
+
 ### Display Widgets
 To display the Widget Blueprint, you must first create a Widget Component for the Widget Blueprint, then you can use the function/event `Add to Viewport` depending on if you are using C++ or Blueprints.
 
@@ -678,7 +683,7 @@ _C++ Version_:
 4. check if the returned UserWidget from step 3 is nullptr then use the -> operator to find the `AddToViewport()` function.
 
 ### Remove Widgets
-To remove widgets, use the function `WidgetName->RemoveFromParent()` (deprecated version: `RemoveFromViewport()`).
+To remove widgets, use the function `WidgetName->RemoveFromParent()` (deprecated version: `RemoveFromViewport()`) in C++. Blueprint version is just a node name `Remove From Parent`.
 
 ## Template Functions
 `TSubClassOf<type>`
@@ -833,7 +838,16 @@ To fix foot sliding, you can calculate the speed at which the character moves in
 
 The y coordinate coming from the foot's **WORLD** location and t coming from the time of the action in the animation (the value in the second parentheses of the Animation preview timeline).
 
-To calculate the value, you just use a calculator and note down the values since the main goal is to find the speed and use the value to place the value as the constraints for the axis in the Blend Space editor. If there are multiple moving animations, then each animation would be placed at their respective speeds.
+To calculate the value, you just use a calculator and note down the values since the main goal is to find the speed and use the value as the constraints for the axis in the Blend Space editor. If there are multiple moving animations, then each animation would be placed at their respective speeds.
+
+#### Aim Offsets
+An animation asset that is an **Additive** to other animations that blends a series of poses that helps a character aim a weapon. Aim offsets are important when it comes to animating looking up and down. 
+
+Just like Blendspaces, Aim offsets use the same animation editor and animation graph. This means that we can pass in values as parameters to affect what animation is played as well as set the axis of the graph. 
+
+**Connecting animations to gameplay:**
+
+An important function that is useful for obtaining the rotation of a player's camera aim is the `Get Base Aim Rotation` function node which takes in an _APawn*_ and returns a _Rotator_ value. If the Pawn has a controller, this function automatically returns a rotator pointing to where the player's camera is looking, if its player controlled, or where the Pawn rotation is facing if it is an AI.
 
 ## Blueprints Tips and Tricks
 - For node connection management, you can add "Reroute Nodes" from the node menu when Right-Clicking.
