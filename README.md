@@ -4,23 +4,119 @@ Here will be all of the notes that will be important for me to retain informatio
 
 # Unreal Engine
 
+## Unreal Macros
+Unreal includes custom preprocessor directives that are used by the compiler to look into larger pieces of code. These directives are ALL CAPS and have similar functionality to C++ macros, although more accustomed to Unreal. These macros are most often used by the Unreal Property System and to add boilerplate code in the class headers.
+
+Current UE Macros I have come across:
+- `GENERATED_BODY()`
+- `UPROPERTY()`
+- `UE_LOG`
+- `UFUNCTION()`
+- `USTRUCT()`
+- `UCLASS()`
+- `UENUM()`
+
+*Note: Not all Macros are like these and have more uses than what I know of.*
+
+### UPROPERTY()
+The most commonly used macro that can be added to mark-up any variables you are creating.
+
+Exposes variables to the Unreal Property System (or the Reflection System), allowing you to expose them to Blueprints and telling the GC that you need the variable.
+
+**It's best to use the `UPROPERTY()` macro for UObjects and members that are used frequently and that are needed to make the game run properly.**
+
+Includes specifiers that allows you to do said Blueprint exposing and many other things.
+
+Editor specifiers:
+- `VisibleAnywhere` : is *visible* in the *bp editor* and *world editor*, but **cannot** be edited.
+- `EditAnywhere` : is *visible* and can be *edited* in the *bp editor* and *world editor*.
+- `VisibleInstanceOnly` : is **not visible** in the *bp editor*, but is *visible* in the *world editor* when an **INSTANCE** of the blueprint is dragged in.
+- `VisibleDefaultsOnly` : is *visibile* in the *bp editor*, but **not visible** in the *world editor*.
+- `EditInstanceOnly` : is **not visible/editable** in the *bp editor*, but is *visible/editable* in the *world editor* when an **INSTANCE** is dragged in.
+- `EditDefaultsOnly` : is *visibile/editable* in the *bp editor*, but **not** in the *world editor*.
+
+*Note: For component types, like UStaticMeshComponent, it is best to use VisibleAnywhere to assign a mesh since EditAnywhere would try to change the UStaticMeshComponent pointer itself rather than changing the static mesh only.*
+
+Blueprint Graph specifiers:
+- `BlueprintReadWrite` : gives access to two nodes in the event graph, which are a getter and a setter for the specified variable.
+- `BlueprintReadOnly` : gives access to ONLY the GETTER node for the variable.
+
+metadata specifiers:
+- To expose private members for blueprints, use the `meta = (AllowPrivateAccess = "true")` in UPROPERTY().
+- To make a float variable a slider, use `meta=(UIMin = 0, UIMax = 1)`.
+- To organize components within the Details tab, use the `Category = "{title}"` parameter.
+
+### UFUNCTION()
+`UFUNCTION()` is similar to `UPROPERTY()` but for functions. It also exposes the function to the _Reflection System_ and has its own specifiers and metadata specifiers. Additionally, it might be needed for binding functions to delegates.
+
+Just like variables, the `UFUNCTION()` macro has specifiers that allow it to be used in Blueprints.
+- `BlueprintAuthorityOnly`: makes function only execute in Blueprint code if running on a machine with network authority.
+- `BlueprintCallable`: makes function executable in Blueprints.
+- `BlueprintCosmetic`: makes function cosmetic and will not run on dedicated servers.
+- `BlueprintImplementableEvent`: makes function implementable in Blueprints.
+  - ***Note**: When giving a function this specifier, Unreal expects the function to be made in Blueprints so there is no need to create the function body in C++. _However_, it is still valid to call the function in C++.
+- `BlueprintNativeEvent`: gives a function a native implementation, but is designed to be overridden by a Blueprint. Declares an additional function named the same as the main function, but with `_Implementation` added to the end, which is where code should be written. If no Blueprint override is found, the `_Implementation` method is called.
+- `BlueprintPure`: The function does not affect the owning object in any way and can be executed in a Blueprint or Level Blueprint graph. By default, a _BlueprintCallable_ const function would be exposed as a Pure function. To keep a function const, but **not** pure, use `BlueprintPure=false`. Be cautious using Pure functions for non-trivial functions as they do not cache their results. This can lead to major overhead and unexpected outputs or crashes. It is good practice to avoid outputting array properties in Blueprint pure functions. see [this article](https://raharuu.github.io/unreal/blueprint-pure-functions-complicated/) for more info on Blueprint Pure Functions.
+
+### GENERATED_BODY()
+Usually located at the top of classes and structs, and to add boilerplate code required by the engine.
+
+TODO: Add photo
+
+### UCLASS, UENUM, USTRUCT
+Macros that are required when creating new classes, enumerations, and structs, respectively. For classes, an empty `UCLASS()` is already included in the Header, but can have additional specifiers like the previous macros.
+
+### UE_LOG for logging
+Macro usage: `UE_LOG(LogTemp, Warning, TEXT(""), params)`
+- LogTemp is category of logging. Others include LogAI, LogGame, and LogEngine
+- Warning is the verbosity, or severity, of the message. Others include Log, Error, and Verbose
+- For params that are FStrings, use an asterisk before the variable to convert it into a Char[] (eg. `*GetName()`). This is only needed for the macro
+
+This macro is similar to using the _Print String_ node in BPs and could be useful in debugging some functions.
+
+To find the messages, dock the Output Log tab in your layout before playing.
+
+TODO: add image
+
 ## Constructing Components
-`CreateDefaultSubobject<type>(TEXT("name"))`
+Function: `CreateDefaultSubobject<type>(TEXT("name"))`
+- _type_ is what the component will be
+- Parameter will be the name that the component will have in the BP editor. It is recommended to not use spaces in the name.
 
-A Template function that constructs a component of the specified type in the angle brackets. The parameter in the parantheses would be the name of said subobject. Returns a pointer to the component set as specified type. 
+*Ex: `CreateDefaultSubobject<UCapsuleComponent>(TEXT("name"))` --> returns UCapsuleComponent\**
 
-*Ex: CreateDefaultSubobject\<UCapsuleComponent\>(TEXT("Capsule")) --> returns UCapsuleComponent\**
-
-TODO: add general steps, and clean up next few subheaders
-
-### Forward Declaration
-Useful when needing a specific class to declare a variable type without including a separate header file. Avoids having to copy loads of code into the file needing the class, but is limited in that it does not allow access to members, use of functions, and constructing objects of the class, making it an incomplete type. To access members/use functions/construct objects, then the header file is needed. 
+How to use function:
+1. In header file, declare variables with type. Add macro with specifiers if needed.
 ```
-#include ...
-
-class {ClassName}
+UPROPERTY(VisibleAnywhere, Category = "Player")
+UStaticMeshComponent* Mesh;
 ```
-*Note: Best practice to avoid including a lot of header files in header files. Only include header files where needed, mostly in cpp files. Use Forward Declaration for header files for type declaring.*
+2. In cpp file, find the function you want to add to then use the `CreateDefaultSubobject<>()` function.
+```
+// some function
+    Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayerMesh"));
+```
+
+In addition to creation, some components may be set up as Root, or set up as a child to another component.
+
+To set as root, assign `RootComponent` to the variable or use `SetRootComponent()`:
+```
+// assignment
+    Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayerMesh"));
+    RootComponent = Mesh;
+
+// function
+    Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayerMesh"));
+    SetRootComponent(Mesh);
+```
+The second method returns a boolean that can be used to check if assignment was successful, but both work the same.
+
+To set as a child to another component, use the function `SetUpAttachment()`:
+```
+// attaching another mesh as a child to first mesh
+    MeshTwo = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ArmorMesh"));
+    MeshTwo->SetUpAttachment(Mesh);
+```
 
 ### Declaring variables for components in header file
 
@@ -32,51 +128,6 @@ UPROPERTY()
 ```
 
 Components declared with a `UPROPERTY()` macro with empty parentheses would have its properties hidden in the Details panel when working on a blueprint derived from the C++ classes. These components would be included in the Engine's _Reflection System_ allowing Garbage Collection (GC) to check if the components is being refrenced or refrencing something before freeing it. Without it, then GC may free a component while using it. **It's best to use the `UPROPERTY()` macro for UObjects and members that are used frequently and that are needed to make the game run properly.**
-
-In order to see the details of the blueprint's components then specifiers are needed within `UPROPERTY()` in order to see and edit the properties in the Details panel in the editor.
-- `VisibleAnywhere` : is *visible* in the *bp editor* and *world editor*, but **cannot** be edited.
-- `EditAnywhere` : is *visible* and can be *edited* in the *bp editor* and *world editor*.
-- `VisibleInstanceOnly` : is **not visible** in the *bp editor*, but is *visible* in the *world editor* when an **INSTANCE** of the blueprint is dragged in.
-- `VisibleDefaultsOnly` : is *visibile* in the *bp editor*, but **not visible** in the *world editor*.
-- `EditInstanceOnly` : is **not visible/editable** in the *bp editor*, but is *visible/editable* in the *world editor* when an **INSTANCE** is dragged in.
-- `EditDefaultsOnly` : is *visibile/editable* in the *bp editor*, but **not** in the *world editor*.
-
-  *Note: For component types, like UStaticMeshComponent, it is best to use VisibleAnywhere to assign a mesh since EditAnywhere would try to change the UStaticMeshComponent pointer itself rather than changing the static mesh only.*
-
-As for exposing components to the Event Graph of the blueprint editor, these parameters would be included within the parentheses:
-- `BlueprintReadWrite` : gives access to two nodes in the event graph, which are a getter and a setter for the specified variable.
-- `BlueprintReadOnly` : gives access to ONLY the GETTER node for the variable.
-
-*Note: Both parameters above **cannot** be used to expose private members.*
-
-**TODO: Create a section for Unreal Engine macros and move them there!!**
-
-Here are some metadata specifiers for `UPROPERTY()`:
-
-To expose private members for blueprints, use the `meta = (AllowPrivateAccess = "true")` in UPROPERTY().
-
-To make a float variable a slider, use `meta=(UIMin = 0, UIMax = 1)`.
-
-To organize components within the Details tab, use the `Category = "{title}"` parameter.
-
-### Other Macros
-Some other UE macros include:
-- `UFUNCTION()`
-- `USTRUCT()`
-- `UCLASS()`
-- `UENUM()`
-
-#### UFUNCTION()
-`UFUNCTION()` is similar to `UPROPERTY()` but for functions. It also exposes the function to the _Reflection System_ and has its own specifiers and metadata specifiers.
-
-Just like variables, the `UFUNCTION()` macro has specifiers that allow it to be used in Blueprints.
-- `BlueprintAuthorityOnly`: makes function only execute in Blueprint code if running on a machine with network authority.
-- `BlueprintCallable`: makes function executable in Blueprints.
-- `BlueprintCosmetic`: makes function cosmetic and will not run on dedicated servers.
-- `BlueprintImplementableEvent`: makes function implementable in Blueprints.
-  - ***Note**: When giving a function this specifier, Unreal expects the function to be made in Blueprints so there is no need to create the function body in C++. _However_, it is still valid to call the function in C++.
-- `BlueprintNativeEvent`: gives a function a native implementation, but is designed to be overridden by a Blueprint. Declares an additional function named the same as the main function, but with `_Implementation` added to the end, which is where code should be written. If no Blueprint override is found, the `_Implementation` method is called.
-- `BlueprintPure`: The function does not affect the owning object in any way and can be executed in a Blueprint or Level Blueprint graph. By default, a _BlueprintCallable_ const function would be exposed as a Pure function. To keep a function const, but **not** pure, use `BlueprintPure=false`. Be cautious using Pure functions for non-trivial functions as they do not cache their results. This can lead to major overhead and unexpected outputs or crashes. It is good practice to avoid outputting array properties in Blueprint pure functions. see [this article](https://raharuu.github.io/unreal/blueprint-pure-functions-complicated/) for more info on Blueprint Pure Functions.
 
 ### Creating your own components for internal details (i.e. Health, Currency, Stats)
 *Note: I'm sure the Gameplay Ability System can easily accomplish this too but this intentially skips GAS just to cover different cases.*
